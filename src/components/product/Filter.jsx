@@ -10,8 +10,7 @@ import { useEffect, useState } from "react";
 import { FiArrowDown, FiArrowUp, FiRefreshCw, FiSearch } from "react-icons/fi";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
-const Filter = ({categories}) => {
-
+const Filter = ({ categories }) => {
   const [searchParams] = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const pathname = useLocation().pathname;
@@ -76,7 +75,7 @@ const Filter = ({categories}) => {
   return (
     <div className="flex lg:flex-row flex-col-reverse lg:justify-between justify-center items-center gap-4">
       {/* SEARCH BAR */}
-      <div className="relative flex items-center 2xl:w-[450px] sm:w-[420px] w-full">
+      <div className="relative flex items-center 2xl:w-112.5 sm:w-105 w-full">
         <input
           type="text"
           placeholder="Search Products..."
@@ -100,7 +99,7 @@ const Filter = ({categories}) => {
             value={category}
             onChange={handleCategoryChange}
             label="Category"
-            className="min-w-[120px] text-slate-800 border-slate-700"
+            className="min-w-30 text-slate-800 border-slate-700"
           >
             <MenuItem value="all">All</MenuItem>
             {categories.map((item) => (
