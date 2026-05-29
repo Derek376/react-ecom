@@ -21,14 +21,23 @@ const Filter = ({ categories }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const currentCategory = searchParams.get("category") || "all";
+    const fromUrl = searchParams.get("category");
     const currentSortOrder = searchParams.get("sortby") || "asc";
     const currentSearchTerm = searchParams.get("keyword") || "";
 
-    setCategory(currentCategory);
     setSortOrder(currentSortOrder);
     setSearchTerm(currentSearchTerm);
-  }, [searchParams]);
+
+    if (categories.length === 0) return;
+
+    if (!fromUrl) {
+      setCategory("all");
+      return;
+    }
+
+    const exists = categories.some((c) => c.categoryName === fromUrl);
+    setCategory(exists ? fromUrl : "all");
+  }, [searchParams, categories]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
