@@ -85,15 +85,15 @@ const ProductCard = ({
             {specialPrice ? (
               <div className="flex flex-col">
                 <span className="text-gray-400 line-through">
-                  ${price.toFixed(2)}
+                  €{price.toFixed(2)}
                 </span>
                 <span className="text-xl font-bold text-slate-700">
-                  ${specialPrice.toFixed(2)}
+                  €{specialPrice.toFixed(2)}
                 </span>
               </div>
             ) : (
               <span className="text-xl font-bold text-slate-700">
-                {"  "}${price.toFixed(2)}
+                {"  "}€{price.toFixed(2)}
               </span>
             )}
 

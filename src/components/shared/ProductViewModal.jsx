@@ -58,16 +58,16 @@ function ProductViewModal({ open, setOpen, product, isAvailable }) {
                     {specialPrice ? (
                       <div className="flex flex-row items-center gap-2">
                         <span className="text-gray-400 line-through">
-                          ${Number(price).toFixed(2)}
+                          €{Number(price).toFixed(2)}
                         </span>
                         <span className="text-xl font-bold text-slate-700">
-                          ${Number(specialPrice).toFixed(2)}
+                          €{Number(specialPrice).toFixed(2)}
                         </span>
                       </div>
                     ) : (
                       <div>
                         <span className="text-xl font-bold">
-                          ${Number(price).toFixed(2)}
+                          €{Number(price).toFixed(2)}
                         </span>
                       </div>
                     )}
