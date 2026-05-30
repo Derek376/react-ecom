@@ -24,7 +24,7 @@ const Navbar = () => {
         >
           <li className="font-medium transition-all duration-150">
             <Link
-              className={`${path === "/" ? "text-white font-semibold" : "text-gray-200"}`}
+              className={`${path === "/" ? "text-white font-semibold" : "text-gray-400"}`}
               to="/"
             >
               Home
@@ -32,7 +32,7 @@ const Navbar = () => {
           </li>
           <li className="font-medium transition-all duration-150">
             <Link
-              className={`${path === "/" ? "text-white font-semibold" : "text-gray-200"}`}
+              className={`${path === "/products" ? "text-white font-semibold" : "text-gray-400"}`}
               to="/products"
             >
               Products
@@ -40,7 +40,7 @@ const Navbar = () => {
           </li>
           <li className="font-medium transition-all duration-150">
             <Link
-              className={`${path === "/" ? "text-white font-semibold" : "text-gray-200"}`}
+              className={`${path === "/about" ? "text-white font-semibold" : "text-gray-400"}`}
               to="/about"
             >
               About
@@ -48,7 +48,7 @@ const Navbar = () => {
           </li>
           <li className="font-medium transition-all duration-150">
             <Link
-              className={`${path === "/" ? "text-white font-semibold" : "text-gray-200"}`}
+              className={`${path === "/contact" ? "text-white font-semibold" : "text-gray-400"}`}
               to="/contact"
             >
               Contact
@@ -57,7 +57,7 @@ const Navbar = () => {
 
           <li className="font-medium transition-all duration-150">
             <Link
-              className={`${path === "/" ? "text-white font-semibold" : "text-gray-200"}`}
+              className={`${path === "/cart" ? "text-white font-semibold" : "text-gray-400"}`}
               to="/cart"
             >
               <Badge

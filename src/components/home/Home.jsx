@@ -44,7 +44,6 @@ const Home = () => {
                 .map((item, i) => <ProductCard key={i} {...item} />)}
           </div>
         )}
-        ;
       </div>
     </div>
   );
