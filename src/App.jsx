@@ -11,6 +11,7 @@ import Home from "./components/home/Home";
 import PrivateRoute from "./components/PrivateRoute";
 import Products from "./components/product/Products";
 import Navbar from "./components/shared/Navbar";
+import Checkout from "./components/checkout/Checkout";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
           <Route path="/" element={<PrivateRoute publicPage />}>
             <Route path="/login" element={<LogIn />} />
             <Route path="/register" element={<Register />} />
