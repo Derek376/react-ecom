@@ -3,9 +3,12 @@ import InputField from "../shared/InputField";
 import { useForm } from "react-hook-form";
 import { FaAddressCard } from "react-icons/fa";
 import Spinners from "../shared/Spinners";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import { addUpdatedUserAddress } from "../../store/actions";
 
-const AddAddressForm = () => {
+const AddAddressForm = ({ address, setOpenAddressModal }) => {
+  const dispatch = useDispatch();
   const { btnLoader } = useSelector((state) => state.errors);
   const {
     register,
@@ -17,8 +20,14 @@ const AddAddressForm = () => {
   });
 
   const onSaveAddressHandler = async (data) => {
-    console.log("Save Address Click");
-    // Handle save address logic here
+    dispatch(
+      addUpdatedUserAddress(
+        data,
+        toast,
+        address?.addressId,
+        setOpenAddressModal,
+      ),
+    );
   };
   return (
     <div className="">
@@ -32,7 +41,7 @@ const AddAddressForm = () => {
           <InputField
             label="Building Name"
             required
-            id="building"
+            id="buildingName"
             type="text"
             message="*Building Name is required"
             placeholder="Enter your building name"
@@ -65,7 +74,7 @@ const AddAddressForm = () => {
           <InputField
             label="Eircode"
             required
-            id="eircode"
+            id="eirCode"
             type="text"
             message="*Eircode is required"
             placeholder="Enter your eircode"

@@ -25,7 +25,7 @@ const AddressInfo = () => {
             Please add your address to complete purchase
           </p>
           <button
-            className="px-4 py-2 bg-blue-600 text-white font-medium rounded-sm hover:bg-blue-700 transition-all cursor-pointer" 
+            className="px-4 py-2 bg-blue-600 text-white font-medium rounded-sm hover:bg-blue-700 transition-all cursor-pointer"
             onClick={addNewAddressHandler}
           >
             Add Address
@@ -49,7 +49,10 @@ const AddressInfo = () => {
       )}
 
       <AddressInfoModal open={openAddressModal} setOpen={setOpenAddressModal}>
-        <AddAddressForm />
+        <AddAddressForm
+          address={selectedAddress}
+          setOpenAddressModal={setOpenAddressModal}
+        />
       </AddressInfoModal>
     </div>
   );
