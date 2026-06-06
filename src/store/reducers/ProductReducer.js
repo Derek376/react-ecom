@@ -1,10 +1,10 @@
 const initialState = {
   products: null,
   categories: [],
-  pagination:{},
+  pagination: {},
 };
 
-export const ProductReducer = (state = initialState, action) => {
+export const productReducer = (state = initialState, action) => {
   switch (action.type) {
     case "FETCH_PRODUCTS":
       return {
@@ -34,7 +34,6 @@ export const ProductReducer = (state = initialState, action) => {
         },
       };
 
-      
     default:
       return state;
   }

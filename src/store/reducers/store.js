@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { ProductReducer } from "./ProductReducer";
+import { productReducer } from "./productReducer";
 import { errorReducer } from "./errorReducer";
 import { cartReducer } from "./cartReducer";
-import { authReducer } from "./AuthReducer";
+import { authReducer } from "./authReducer";
 
 const user = localStorage.getItem("auth")
   ? JSON.parse(localStorage.getItem("auth"))
@@ -21,7 +21,7 @@ const initialState = {
 
 export const store = configureStore({
   reducer: {
-    products: ProductReducer,
+    products: productReducer,
     errors: errorReducer,
     carts: cartReducer,
     auth: authReducer,
