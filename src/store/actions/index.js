@@ -160,8 +160,13 @@ export const addUpdatedUserAddress =
   async (dispatch, getState) => {
     dispatch({ type: "BUTTON_LOADER" });
     try {
-      const { data } = await api.post("/addresses", sendData);
-      toast.success("Address added successfully");
+      if (addressId) {
+        await api.put(`/addresses/${addressId}`, sendData);
+      } else {
+        const { data } = await api.post("/addresses", sendData);
+      }
+      dispatch(getUserAddresses());
+      toast.success("Address saved successfully");
       dispatch({ type: "IS_SUCCESS" });
     } catch (error) {
       console.log(error);
