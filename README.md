@@ -1,6 +1,6 @@
 # react-ecom — E-commerce Frontend
 
-Single-page e-commerce storefront built with React. Connects to the [sb-ecom](../sb-ecom) Spring Boot API for products, authentication, cart sync, addresses, and order placement.
+Single-page e-commerce storefront built with React. Connects to the [sb-ecom](https://github.com/Derek376/sb-ecom) Spring Boot API for products, authentication, cart sync, addresses, and order placement.
 
 ## Tech Stack
 
