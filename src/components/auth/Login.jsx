@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { AiOutlineLogin } from "react-icons/ai";
-import { Link, useNavigate } from "react-router-dom";
-import InputField from "../shared/InputField";
-import { useDispatch } from "react-redux";
-import { authenticateSignInUser } from "../../store/actions";
 import toast from "react-hot-toast";
+import { AiOutlineLogin } from "react-icons/ai";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { authenticateSignInUser } from "../../store/actions";
+import InputField from "../shared/InputField";
 import Spinners from "../shared/Spinners";
 
 const LogIn = () => {
@@ -23,7 +23,6 @@ const LogIn = () => {
   });
 
   const loginHandler = async (data) => {
-    console.log("Login Click");
     dispatch(authenticateSignInUser(data, toast, reset, navigate, setLoader));
   };
 
