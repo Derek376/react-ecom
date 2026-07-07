@@ -6,12 +6,13 @@ import About from "./components/About";
 import LogIn from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import Cart from "./components/cart/Cart";
+import Checkout from "./components/checkout/Checkout";
+import PaymentConfirmation from "./components/checkout/PaymentConfirmation";
 import Contact from "./components/Contact";
 import Home from "./components/home/Home";
 import PrivateRoute from "./components/PrivateRoute";
 import Products from "./components/product/Products";
 import Navbar from "./components/shared/Navbar";
-import Checkout from "./components/checkout/Checkout";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
 
           <Route path="/" element={<PrivateRoute />}>
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/order-confirm" element={<PaymentConfirmation />} />
           </Route>
 
           <Route path="/" element={<PrivateRoute publicPage />}>

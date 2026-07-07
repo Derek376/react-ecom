@@ -1,15 +1,15 @@
-import { Step, Stepper, StepLabel, Button } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import AddressInfo from "./AddressInfo";
+import { Button, Step, StepLabel, Stepper } from "@mui/material";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserAddresses } from "../../store/actions";
-import toast from "react-hot-toast";
-import Skeleton from "../shared/Skeleton";
 import ErrorPage from "../shared/ErrorPage";
-import PaymentMethod from "./PaymentMethod";
+import Skeleton from "../shared/Skeleton";
+import AddressInfo from "./AddressInfo";
 import OrderSummary from "./OrderSummary";
-import StripePayment from "./StripePayment";
+import PaymentMethod from "./PaymentMethod";
 import PaypalPayment from "./PaypalPayment";
+import StripePayment from "./StripePayment";
 
 const Checkout = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -37,13 +37,13 @@ const Checkout = () => {
     setActiveStep((prevStep) => prevStep + 1);
   };
 
-  const steps = ["Address", "Payment Method", "Order Summary", "Playment"];
+  const steps = ["Address", "Payment Method", "Order Summary", "Payment"];
   useEffect(() => {
     dispatch(getUserAddresses());
   }, [dispatch]);
 
   return (
-    <div className="py-14 min-h-[calc(100vh-100px)]">
+    <div className="py-14 min-h-[calc(100vh-100px)] mb-7">
       <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((label, index) => (
           <Step key={index}>
