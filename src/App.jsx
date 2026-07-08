@@ -13,6 +13,7 @@ import Home from "./components/home/Home";
 import PrivateRoute from "./components/PrivateRoute";
 import Products from "./components/product/Products";
 import Navbar from "./components/shared/Navbar";
+import AdminLayout from "./components/admin/AdminLayout";
 
 function App() {
   return (
@@ -34,6 +35,10 @@ function App() {
           <Route path="/" element={<PrivateRoute publicPage />}>
             <Route path="/login" element={<LogIn />} />
             <Route path="/register" element={<Register />} />
+          </Route>
+
+          <Route path="/" element={<PrivateRoute />}>
+            <Route path="/admin" element={<AdminLayout />} />
           </Route>
         </Routes>
       </Router>
