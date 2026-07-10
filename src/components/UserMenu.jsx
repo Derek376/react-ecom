@@ -43,9 +43,11 @@ const UserMenu = () => {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-          sx: { width: 160 },
+        slotProps={{
+          list: {
+            "aria-labelledby": "basic-button",
+            sx: { width: 160 },
+          },
         }}
       >
         <Link to="/profile">

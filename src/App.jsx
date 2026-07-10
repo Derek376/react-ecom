@@ -14,10 +14,10 @@ import PrivateRoute from "./components/PrivateRoute";
 import Products from "./components/product/Products";
 import Navbar from "./components/shared/Navbar";
 import AdminLayout from "./components/admin/AdminLayout";
-import DashBoard from "./components/admin/dashboard/DashBoard";
 import AdminProducts from "./components/admin/products/AdminProducts";
 import Sellers from "./components/admin/sellers/Sellers";
 import Category from "./components/admin/categories/Category";
+import Dashboard from "./components/admin/dashboard/Dashboard";
 import Orders from "./components/admin/orders/Orders";
 
 function App() {
@@ -44,7 +44,7 @@ function App() {
 
           <Route path="/" element={<PrivateRoute adminOnly />}>
             <Route path="/admin" element={<AdminLayout />}>
-              <Route path="" element={<DashBoard />} />
+              <Route path="" element={<Dashboard />} />
               <Route path="products" element={<AdminProducts />} />
               <Route path="sellers" element={<Sellers />} />
               <Route path="categories" element={<Category />} />
