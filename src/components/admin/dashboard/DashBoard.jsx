@@ -1,13 +1,31 @@
 import { FaBoxOpen, FaShoppingCart } from "react-icons/fa";
 import DashboardOverview from "./DashboardOverview";
 import { RiMoneyEuroCircleFill } from "react-icons/ri";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { analyticsAction } from "../../../store/actions";
+import Loader from "../../shared/Loader";
+import ErrorPage from "../../shared/ErrorPage";
 
 const Dashboard = () => {
-  const { productCount, totalRevenue, totalOrders } = {
-    productCount: 12,
-    totalRevenue: 3738,
-    totalOrders: 4,
-  };
+  const dispatch = useDispatch();
+  const { isLoading, errorMessage } = useSelector((state) => state.errors);
+
+  const {
+    analytics: { productCount, totalRevenue, totalOrders },
+  } = useSelector((state) => state.admin);
+
+  useEffect(() => {
+    dispatch(analyticsAction());
+  }, [dispatch]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (errorMessage) {
+    return <ErrorPage message={errorMessage} />;
+  }
 
   return (
     <div>
