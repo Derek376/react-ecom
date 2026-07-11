@@ -2,8 +2,12 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { adminOrderTableColumns } from "../../helper/tableColumn";
+import Modal from "../../shared/Modal";
+// import UpdateOrderForm from "./UpdateOrderForm";
 
 const OrderTable = ({ adminOrders, pagination }) => {
+  const [updateOpenModal, setUpdateOpenModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState("");
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(
     pagination?.pageNumber + 1 || 1,
@@ -28,6 +32,11 @@ const OrderTable = ({ adminOrders, pagination }) => {
     navigate(`${pathname}?${params}`);
   };
 
+  const handleEdit = (order) => {
+    setSelectedItem(order);
+    setUpdateOpenModal(true);
+  };
+
   return (
     <div>
       <h1 className="text-slate-800 text-3xl text-center font-bold pb-6 uppercase">
@@ -38,7 +47,7 @@ const OrderTable = ({ adminOrders, pagination }) => {
         <DataGrid
           className="w-full"
           rows={tableRecords}
-          columns={adminOrderTableColumns}
+          columns={adminOrderTableColumns(handleEdit)}
           paginationMode="server"
           rowCount={pagination?.totalElements || 0}
           initialState={{
@@ -61,6 +70,21 @@ const OrderTable = ({ adminOrders, pagination }) => {
           }}
         />
       </div>
+
+      <Modal
+        open={updateOpenModal}
+        setOpen={setUpdateOpenModal}
+        title="Update Order Status"
+      >
+        {/* <UpdateOrderForm
+          setOpen={setUpdateOpenModal}
+          open={updateOpenModal}
+          loader={loader}
+          setLoader={setLoader}
+          selectedId={selectedItem.id}
+          selectedItem={selectedItem}
+        /> */}
+      </Modal>
     </div>
   );
 };
