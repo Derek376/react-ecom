@@ -38,6 +38,19 @@ const OrderTable = ({ adminOrders, pagination }) => {
     setUpdateOpenModal(true);
   };
 
+  const handleSortChange = (sortModel) => {
+    if (sortModel.length > 0) {
+      const { sort } = sortModel[0];
+      params.set("sortby", sort);
+    } else {
+      params.delete("sortby");
+    }
+
+    params.set("page", "1");
+    setCurrentPage(1);
+    navigate(`${pathname}?${params}`);
+  };
+
   return (
     <div>
       <h1 className="text-slate-800 text-3xl text-center font-bold pb-6 uppercase">
@@ -50,6 +63,8 @@ const OrderTable = ({ adminOrders, pagination }) => {
           rows={tableRecords}
           columns={adminOrderTableColumns(handleEdit)}
           paginationMode="server"
+          sortingMode="server"
+          onSortModelChange={handleSortChange}
           rowCount={pagination?.totalElements || 0}
           initialState={{
             pagination: {

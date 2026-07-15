@@ -17,6 +17,7 @@ const ItemContent = ({
   image,
   description,
   quantity,
+  stockQuantity,
   price,
   discount,
   specialPrice,
@@ -74,7 +75,7 @@ const ItemContent = ({
                   specialPrice,
                   price,
                   productId,
-                  quantity,
+                  stockQuantity,
                 })
               }
               className="flex items-center font-semibold space-x-2 px-4 py-1 text-xs border border-rose-600 text-rose-600 rounded-md hover:bg-red-50 transition-colors duration-200"
@@ -102,7 +103,7 @@ const ItemContent = ({
               specialPrice,
               price,
               productId,
-              quantity,
+              stockQuantity,
             })
           }
           handleQtyDecrease={() => {
@@ -113,7 +114,7 @@ const ItemContent = ({
               specialPrice,
               price,
               productId,
-              quantity,
+              stockQuantity,
             });
           }}
         />

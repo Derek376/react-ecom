@@ -51,7 +51,14 @@ export const addToCart =
   (dispatch, getState) => {
     // Find the product
     const { products } = getState().products;
-    const getProduct = products.find((product) => product.id === data.id);
+    const getProduct = products.find(
+      (product) => product.productId === data.productId,
+    );
+
+    if (!getProduct) {
+      toast.error("Product info not available");
+      return;
+    }
 
     // Check for stocks
     const isQuantityExist = getProduct.quantity >= qty;
@@ -60,7 +67,7 @@ export const addToCart =
     if (isQuantityExist) {
       dispatch({
         type: "ADD_CART",
-        payload: { ...data, quantity: qty },
+        payload: { ...data, quantity: qty, stockQuantity: getProduct.quantity },
       });
       toast.success(`${data?.productName} added to the cart`);
       localStorage.setItem("cartItems", JSON.stringify(getState().carts.cart));
@@ -74,13 +81,12 @@ export const increaseCartQuantity =
   (data, toast, currentQuantity, setCurrentQuantity) =>
   (dispatch, getState) => {
     // Find the product
-    const { products } = getState().products;
+    if (!data.stockQuantity) {
+      toast.error("Product info not available. Please re-add this item.");
+      return;
+    }
 
-    const getProduct = products.find(
-      (item) => item.productId === data.productId,
-    );
-
-    const isQuantityExist = getProduct.quantity >= currentQuantity + 1;
+    const isQuantityExist = data.stockQuantity >= currentQuantity + 1;
 
     if (isQuantityExist) {
       const newQuantity = currentQuantity + 1;
@@ -88,7 +94,7 @@ export const increaseCartQuantity =
 
       dispatch({
         type: "ADD_CART",
-        payload: { ...data, quantity: newQuantity + 1 },
+        payload: { ...data, quantity: newQuantity },
       });
       localStorage.setItem("cartItems", JSON.stringify(getState().carts.cart));
     } else {
