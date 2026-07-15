@@ -5,43 +5,45 @@ import Loader from "../../shared/Loader";
 import { FaBoxOpen } from "react-icons/fa";
 import { DataGrid } from "@mui/x-data-grid";
 import { adminProductTableColumns } from "../../helper/tableColumn";
+import { useDashboardProductFilter } from "../../../hook/useProductFilter";
 
 const AdminProducts = () => {
-  const products = [
-    {
-      productId: 4,
-      productName: "Noise Cancelling Headphones",
-      image:
-        "http://localhost:8080/images/16dcb07c-4dc8-4fde-906a-63d87b187f5e.svg",
-      description:
-        "Wireless over-ear headphones with active noise cancellation and 40-hour battery life.",
-      quantity: 30,
-      price: 250.0,
-      discount: 15.0,
-      specialPrice: 212.5,
-    },
-    {
-      productId: 5,
-      productName: "Smartwatch Series X",
-      image:
-        "http://localhost:8080/images/467afed2-19d7-4adb-a5e9-b2a7a60fb941.svg",
-      description:
-        "Water-resistant fitness tracker with heart rate monitoring, GPS, and sleep analysis.",
-      quantity: 52,
-      price: 199.0,
-      discount: 20.0,
-      specialPrice: 159.2,
-    },
-  ];
+  // const products = [
+  //   {
+  //     productId: 4,
+  //     productName: "Noise Cancelling Headphones",
+  //     image:
+  //       "http://localhost:8080/images/16dcb07c-4dc8-4fde-906a-63d87b187f5e.svg",
+  //     description:
+  //       "Wireless over-ear headphones with active noise cancellation and 40-hour battery life.",
+  //     quantity: 30,
+  //     price: 250.0,
+  //     discount: 15.0,
+  //     specialPrice: 212.5,
+  //   },
+  //   {
+  //     productId: 5,
+  //     productName: "Smartwatch Series X",
+  //     image:
+  //       "http://localhost:8080/images/467afed2-19d7-4adb-a5e9-b2a7a60fb941.svg",
+  //     description:
+  //       "Water-resistant fitness tracker with heart rate monitoring, GPS, and sleep analysis.",
+  //     quantity: 52,
+  //     price: 199.0,
+  //     discount: 20.0,
+  //     specialPrice: 159.2,
+  //   },
+  // ];
 
-  const pagination = {
-    pageNumber: 0,
-    pageSize: 6,
-    totalElements: 4,
-    totalPages: 1,
-    lastPage: true,
-  };
+  // const pagination = {
+  //   pageNumber: 0,
+  //   pageSize: 6,
+  //   totalElements: 4,
+  //   totalPages: 1,
+  //   lastPage: true,
+  // };
 
+  const { products, pagination } = useSelector((state) => state.products);
   const { isLoading, errorMessage } = useSelector((state) => state.errors);
 
   const emptyProducts = !products || products?.length === 0;
@@ -49,6 +51,8 @@ const AdminProducts = () => {
   const [currentPage, setCurrentPage] = useState(
     pagination?.pageNumber + 1 || 1,
   );
+
+  useDashboardProductFilter();
 
   const tableRecords = products?.map((product) => ({
     id: product.productId,

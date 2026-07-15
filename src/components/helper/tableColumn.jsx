@@ -1,83 +1,75 @@
 import { FaEdit, FaEye, FaImage, FaTrashAlt } from "react-icons/fa";
+import { formatPrice } from "../../utils/formatPrice";
+
+const orderColBase = {
+  disableColumnMenu: true,
+  editable: false,
+  sortable: false,
+  headerAlign: "center",
+  align: "center",
+  headerClassName: "text-black font-semibold text-center border",
+  cellClassName: "text-slate-700 font-normal border text-center",
+};
+
+const productColBase = {
+  disableColumnMenu: true,
+  editable: false,
+  sortable: false,
+  headerAlign: "center",
+  align: "center",
+  headerClassName: "text-black font-semibold text-center border",
+  cellClassName: "text-slate-700 font-normal border text-center",
+};
 
 export const adminOrderTableColumns = (handleEdit) => [
   {
-    sortable: false,
-    disableColumnMenu: true,
+    ...orderColBase,
     field: "id",
     headerName: "orderId",
-    align: "center",
     minWidth: 100,
-    headerAlign: "center",
-    editable: false,
-    headerClassName: "text-black font-semibold border",
-    cellClassName: "text-slate-700 font-normal border",
-    renderHeader: (params) => <span className="text-center">Order ID</span>,
+    renderHeader: () => <span>Order ID</span>,
   },
   {
-    disableColumnMenu: true,
+    ...orderColBase,
     field: "email",
     headerName: "Email",
-    align: "center",
     minWidth: 180,
     flex: 1,
-    editable: false,
-    sortable: false,
-    headerAlign: "center",
-    headerClassName: "text-black font-semibold text-center border",
-    cellClassName: "text-slate-700 font-normal border text-center",
-    renderHeader: (params) => <span>Email</span>,
+    renderHeader: () => <span>Email</span>,
   },
   {
-    disableColumnMenu: true,
+    ...orderColBase,
     field: "totalAmount",
     headerName: "Total Amount",
-    align: "center",
     minWidth: 120,
-    editable: false,
     sortable: true,
-    headerAlign: "center",
-    headerClassName: "text-black font-semibold text-center border",
-    cellClassName: "text-slate-700 font-normal border text-center",
-    renderHeader: (params) => <span>Total Amount</span>,
+    renderHeader: () => <span>Total Amount</span>,
   },
   {
-    disableColumnMenu: true,
+    ...orderColBase,
     field: "status",
     headerName: "Status",
-    align: "center",
     width: 140,
-    editable: false,
-    sortable: false,
-    headerAlign: "center",
-    headerClassName: "text-black font-semibold text-center border",
-    cellClassName: "text-slate-700 font-normal border text-center",
-    renderHeader: (params) => <span>Status</span>,
+    renderHeader: () => <span>Status</span>,
   },
   {
-    disableColumnMenu: true,
+    ...orderColBase,
     field: "date",
     headerName: "Order Date",
-    align: "center",
     width: 130,
-    editable: false,
-    sortable: false,
-    headerAlign: "center",
-    headerClassName: "text-black font-semibold text-center border",
-    cellClassName: "text-slate-700 font-normal border text-center",
-    renderHeader: (params) => <span>Order Date</span>,
+    renderHeader: () => <span>Order Date</span>,
   },
   {
     field: "action",
     headerName: "Action",
+    headerAlign: "center",
     align: "center",
     width: 110,
     editable: false,
     sortable: false,
-    headerAlign: "center",
     headerClassName: "text-black font-semibold text-center",
     cellClassName: "text-slate-700 font-normal",
-    renderHeader: (params) => <span>Action</span>,
+    renderHeader: () => <span>Action</span>,
     renderCell: (params) => {
       return (
         <div className="flex items-center justify-center space-x-2 h-full pt-2">
@@ -101,138 +93,122 @@ export const adminProductTableColumns = (
   handleProductView,
 ) => [
   {
-    sortable: false,
-    disableColumnMenu: true,
+    ...productColBase,
     field: "id",
     headerName: "productId",
-    align: "center",
-    minWidth: 100,
-    headerAlign: "center",
-    editable: false,
-    headerClassName: "text-black font-semibold border",
-    cellClassName: "text-slate-700 font-normal border",
-    renderHeader: (params) => <span className="text-center">Product ID</span>,
+    minWidth: 90,
+    renderHeader: () => <span>Product ID</span>,
   },
   {
-    disableColumnMenu: true,
+    ...productColBase,
     field: "productName",
     headerName: "Product Name",
-    align: "center",
-    minWidth: 180,
+    minWidth: 160,
     flex: 1,
-    editable: false,
-    sortable: false,
-    headerAlign: "center",
-    headerClassName: "text-black font-semibold text-center border",
-    cellClassName: "text-slate-700 font-normal border text-center",
-    renderHeader: (params) => <span>Product Name</span>,
+    renderHeader: () => <span>Product Name</span>,
+    renderCell: (params) => (
+      <span title={params.value} className="truncate block w-full">
+        {params.value}
+      </span>
+    ),
   },
   {
-    disableColumnMenu: true,
+    ...productColBase,
     field: "price",
     headerName: "Price",
-    align: "center",
-    minWidth: 120,
-    editable: false,
+    width: 100,
     sortable: true,
-    headerAlign: "center",
-    headerClassName: "text-black font-semibold text-center border",
-    cellClassName: "text-slate-700 font-normal border text-center",
-    renderHeader: (params) => <span>Price</span>,
+    renderHeader: () => <span>Price</span>,
+    renderCell: (params) => formatPrice(params.value),
   },
   {
-    disableColumnMenu: true,
+    ...productColBase,
     field: "quantity",
     headerName: "Quantity",
-    align: "center",
-    width: 140,
-    editable: false,
-    sortable: false,
-    headerAlign: "center",
-    headerClassName: "text-black font-semibold text-center border",
-    cellClassName: "text-slate-700 font-normal border text-center",
-    renderHeader: (params) => <span>Quantity</span>,
+    width: 90,
+    renderHeader: () => <span>Qty</span>,
   },
   {
-    disableColumnMenu: true,
+    ...productColBase,
     field: "specialPrice",
     headerName: "Special Price",
-    align: "center",
-    width: 130,
-    editable: false,
-    sortable: false,
-    headerAlign: "center",
-    headerClassName: "text-black font-semibold text-center border",
-    cellClassName: "text-slate-700 font-normal border text-center",
-    renderHeader: (params) => <span>Special Price</span>,
+    width: 110,
+    renderHeader: () => <span>Special</span>,
+    renderCell: (params) => formatPrice(params.value),
   },
   {
-    disableColumnMenu: true,
+    ...productColBase,
     field: "description",
     headerName: "Description",
-    align: "center",
-    width: 110,
-    editable: false,
-    sortable: false,
-    headerAlign: "center",
-    headerClassName: "text-black font-semibold text-center border",
-    cellClassName: "text-slate-700 font-normal border text-center",
-    renderHeader: (params) => <span>Description</span>,
+    minWidth: 180,
+    flex: 1,
+    renderHeader: () => <span>Description</span>,
+    renderCell: (params) => (
+      <span title={params.value} className="truncate block w-full">
+        {params.value}
+      </span>
+    ),
   },
   {
-    disableColumnMenu: true,
+    ...productColBase,
     field: "image",
     headerName: "Image",
-    align: "center",
-    width: 130,
-    editable: false,
-    sortable: false,
-    headerAlign: "center",
-    headerClassName: "text-black font-semibold text-center border",
-    cellClassName: "text-slate-700 font-normal border text-center",
-    renderHeader: (params) => <span>Image</span>,
+    width: 90,
+    renderHeader: () => <span>Image</span>,
+    renderCell: (params) =>
+      params.value ? (
+        <img
+          src={params.value}
+          alt=""
+          className="w-12 h-12 object-cover rounded mx-auto"
+        />
+      ) : null,
   },
   {
     field: "action",
     headerName: "Action",
     headerAlign: "center",
-    width: 400,
+    align: "center",
+    width: 220,
     editable: false,
     sortable: false,
     headerClassName: "text-black font-semibold text-center",
     cellClassName: "text-slate-700 font-normal",
-    renderHeader: (params) => <span>Action</span>,
+    renderHeader: () => <span>Action</span>,
     renderCell: (params) => {
       return (
-        <div className="flex items-center justify-center space-x-2 h-full pt-2">
+        <div className="flex items-center justify-center gap-1.5 h-full py-1">
           <button
+            type="button"
+            title="Upload Image"
             onClick={() => handleImageUpload(params.row)}
-            className="flex items-center bg-green-500 hover:bg-green-600 text-white px-4 h-9 rounded-md"
+            className="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white px-2.5 h-9 rounded-md"
           >
-            <FaImage className="mr-2" />
-            Image
+            <FaImage />
           </button>
           <button
+            type="button"
+            title="Edit"
             onClick={() => handleEdit(params.row)}
-            className="flex items-center bg-blue-500 hover:bg-blue-600 text-white px-4 h-9 rounded-md "
+            className="flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white px-2.5 h-9 rounded-md"
           >
-            <FaEdit className="mr-2" />
-            Edit
+            <FaEdit />
           </button>
-
           <button
+            type="button"
+            title="Delete"
             onClick={() => handleDelete(params.row)}
-            className="flex items-center bg-red-500 hover:bg-red-600 text-white px-4   h-9 rounded-md"
+            className="flex items-center justify-center bg-red-500 hover:bg-red-600 text-white px-2.5 h-9 rounded-md"
           >
-            <FaTrashAlt className="mr-2" />
-            Delete
+            <FaTrashAlt />
           </button>
           <button
+            type="button"
+            title="View"
             onClick={() => handleProductView(params.row)}
-            className="flex items-center bg-slate-800 hover:bg-slate-900 text-white px-4   h-9 rounded-md"
+            className="flex items-center justify-center bg-slate-800 hover:bg-slate-900 text-white px-2.5 h-9 rounded-md"
           >
-            <FaEye className="mr-2" />
-            View
+            <FaEye />
           </button>
         </div>
       );
