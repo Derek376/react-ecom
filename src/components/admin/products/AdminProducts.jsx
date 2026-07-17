@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import { DataGrid } from "@mui/x-data-grid";
+import { useState } from "react";
+import { FaBoxOpen } from "react-icons/fa";
 import { MdAddShoppingCart } from "react-icons/md";
 import { useSelector } from "react-redux";
-import Loader from "../../shared/Loader";
-import { FaBoxOpen } from "react-icons/fa";
-import { DataGrid } from "@mui/x-data-grid";
-import { adminProductTableColumns } from "../../helper/tableColumn";
 import { useDashboardProductFilter } from "../../../hook/useProductFilter";
+import { adminProductTableColumns } from "../../helper/tableColumn";
+import Loader from "../../shared/Loader";
+import Modal from "../../shared/Modal";
+import AddProductForm from "./AddProductForm";
 
 const AdminProducts = () => {
   // const products = [
@@ -52,6 +54,9 @@ const AdminProducts = () => {
     pagination?.pageNumber + 1 || 1,
   );
 
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
   useDashboardProductFilter();
 
   const tableRecords = products?.map((product) => ({
@@ -66,7 +71,8 @@ const AdminProducts = () => {
   }));
 
   const handleEdit = (product) => {
-    console.log("Edit product:", product);
+    setSelectedProduct(product);
+    setOpenUpdateModal(true);
   };
 
   const handleDelete = (product) => {
@@ -152,6 +158,18 @@ const AdminProducts = () => {
           )}
         </>
       )}
+
+      <Modal
+        open={openUpdateModal}
+        setOpen={setOpenUpdateModal}
+        title="Update Product"
+      >
+        <AddProductForm
+          setOpen={setOpenUpdateModal}
+          product={selectedProduct}
+          update={openUpdateModal}
+        />
+      </Modal>
     </div>
   );
 };
