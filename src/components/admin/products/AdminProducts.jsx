@@ -2,12 +2,13 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useState } from "react";
 import { FaBoxOpen } from "react-icons/fa";
 import { MdAddShoppingCart } from "react-icons/md";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useDashboardProductFilter } from "../../../hook/useProductFilter";
 import { adminProductTableColumns } from "../../helper/tableColumn";
 import Loader from "../../shared/Loader";
 import Modal from "../../shared/Modal";
 import AddProductForm from "./AddProductForm";
+import DeleteModal from "../../shared/DeleteModal";
 
 const AdminProducts = () => {
   // const products = [
@@ -53,10 +54,12 @@ const AdminProducts = () => {
   const [currentPage, setCurrentPage] = useState(
     pagination?.pageNumber + 1 || 1,
   );
+  const dispatch = useDispatch();
 
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [openAddModal, setOpenAddModal] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   useDashboardProductFilter();
 
@@ -77,7 +80,8 @@ const AdminProducts = () => {
   };
 
   const handleDelete = (product) => {
-    console.log("Delete product:", product);
+    setSelectedProduct(product);
+    setOpenDeleteModal(true);
   };
 
   const handleImageUpload = (product) => {
@@ -94,6 +98,10 @@ const AdminProducts = () => {
 
   const handlePaginationChange = (paginationModel) => {
     console.log("Pagination model changed:", paginationModel);
+  };
+
+  const onDeleteHandler = () => {
+    console.log("Delete product:", selectedProduct);
   };
 
   return (
@@ -164,16 +172,27 @@ const AdminProducts = () => {
       )}
 
       <Modal
-        open={openUpdateModal || openAddModal}
-        setOpen={openUpdateModal ? setOpenUpdateModal : setOpenAddModal}
-        title={openUpdateModal ? "Update Product" : "Add Product"}
+        open={openUpdateModal}
+        setOpen={setOpenUpdateModal}
+        title="Update Product"
       >
         <AddProductForm
-          setOpen={openUpdateModal ? setOpenUpdateModal : setOpenAddModal}
+          setOpen={setOpenUpdateModal}
           product={selectedProduct}
-          update={openUpdateModal}
+          update={true}
         />
       </Modal>
+
+      <Modal open={openAddModal} setOpen={setOpenAddModal} title="Add Product">
+        <AddProductForm setOpen={setOpenAddModal} update={false} />
+      </Modal>
+
+      <DeleteModal
+        open={openDeleteModal}
+        setOpen={setOpenDeleteModal}
+        title="Delete Product"
+        onDeleteHandler={onDeleteHandler}
+      />
     </div>
   );
 };
