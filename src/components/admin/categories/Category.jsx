@@ -102,7 +102,7 @@ const Category = () => {
               </h2>
             </div>
           ) : (
-            <div className="max-w-fit mx-auto">
+            <div className="w-full mx-auto">
               <DataGrid
                 className="w-full"
                 rows={tableRecords}

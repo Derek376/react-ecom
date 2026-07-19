@@ -1,4 +1,5 @@
 import { FaEdit, FaEye, FaImage, FaTrashAlt } from "react-icons/fa";
+import { MdOutlineEmail } from "react-icons/md";
 import { formatPrice } from "../../utils/formatPrice";
 
 const orderColBase = {
@@ -22,6 +23,16 @@ const productColBase = {
 };
 
 const categoryColBase = {
+  disableColumnMenu: true,
+  editable: false,
+  sortable: false,
+  headerAlign: "center",
+  align: "center",
+  headerClassName: "text-black font-semibold text-center border",
+  cellClassName: "text-slate-700 font-normal border text-center",
+};
+
+const sellerColBase = {
   disableColumnMenu: true,
   editable: false,
   sortable: false,
@@ -231,14 +242,16 @@ export const categoryTableColumns = (handleEdit, handleDelete) => [
     ...categoryColBase,
     field: "id",
     headerName: "CategoryId",
-    minWidth: 300,
+    minWidth: 100,
+    width: 100,
     renderHeader: () => <span>CategoryId</span>,
   },
   {
     ...categoryColBase,
     field: "categoryName",
     headerName: "Category Name",
-    width: 400,
+    minWidth: 160,
+    flex: 1,
     renderHeader: () => <span>Category Name</span>,
   },
   {
@@ -248,7 +261,7 @@ export const categoryTableColumns = (handleEdit, handleDelete) => [
     align: "center",
     editable: false,
     sortable: false,
-    width: 400,
+    width: 220,
     headerClassName: "text-black font-semibold text-center",
     cellClassName: "text-slate-700 font-normal",
     renderHeader: () => <span>Action</span>,
@@ -269,6 +282,43 @@ export const categoryTableColumns = (handleEdit, handleDelete) => [
             <FaTrashAlt className="mr-2" />
             Delete
           </button>
+        </div>
+      );
+    },
+  },
+];
+
+export const sellerTableColumns = [
+  {
+    ...sellerColBase,
+    field: "id",
+    headerName: "ID",
+    minWidth: 100,
+    width: 100,
+    renderHeader: () => <span>SellerID</span>,
+  },
+  {
+    ...sellerColBase,
+    field: "username",
+    headerName: "UserName",
+    minWidth: 140,
+    flex: 1,
+    renderHeader: () => <span>UserName</span>,
+  },
+  {
+    ...sellerColBase,
+    field: "email",
+    headerName: "Email",
+    minWidth: 200,
+    flex: 1.5,
+    renderHeader: () => <span>Email</span>,
+    renderCell: (params) => {
+      return (
+        <div className="flex items-center justify-center gap-1">
+          <span>
+            <MdOutlineEmail className="text-slate-700 text-lg" />
+          </span>
+          <span>{params?.row?.email}</span>
         </div>
       );
     },
