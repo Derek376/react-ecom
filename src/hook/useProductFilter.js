@@ -48,6 +48,10 @@ export const useDashboardProductFilter = () => {
       : 1;
 
     params.set("pageNumber", currentPage - 1);
+    const sortOrder = searchParams.get("sortby") || "asc";
+    params.set("sortBy", "price");
+    params.set("sortOrder", sortOrder);
+    params.set("pageNumber", currentPage - 1);
 
     const queryString = params.toString();
 

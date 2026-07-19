@@ -9,6 +9,9 @@ import Loader from "../../shared/Loader";
 import Modal from "../../shared/Modal";
 import AddProductForm from "./AddProductForm";
 import DeleteModal from "../../shared/DeleteModal";
+import { deleteProductFromDashboard } from "../../../store/actions";
+import toast from "react-hot-toast";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 const AdminProducts = () => {
   // const products = [
@@ -55,11 +58,16 @@ const AdminProducts = () => {
     pagination?.pageNumber + 1 || 1,
   );
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const params = new URLSearchParams(searchParams);
+  const pathname = useLocation().pathname;
 
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   useDashboardProductFilter();
 
@@ -93,15 +101,34 @@ const AdminProducts = () => {
   };
 
   const handleSortChange = (sortModel) => {
-    console.log("Sort model changed:", sortModel);
+    if (sortModel.length > 0) {
+      const { sort } = sortModel[0];
+      params.set("sortby", sort);
+    } else {
+      params.delete("sortby");
+    }
+
+    params.set("page", "1");
+    setCurrentPage(1);
+    navigate(`${pathname}?${params}`);
   };
 
   const handlePaginationChange = (paginationModel) => {
-    console.log("Pagination model changed:", paginationModel);
+    const page = paginationModel.page + 1;
+    setCurrentPage(page);
+    params.set("page", page.toString());
+    navigate(`${pathname}?${params}`);
   };
 
   const onDeleteHandler = () => {
-    console.log("Delete product:", selectedProduct);
+    dispatch(
+      deleteProductFromDashboard(
+        setLoader,
+        selectedProduct.id,
+        toast,
+        setOpenDeleteModal,
+      ),
+    );
   };
 
   return (
@@ -150,7 +177,7 @@ const AdminProducts = () => {
                 initialState={{
                   pagination: {
                     paginationModel: {
-                      pageSize: pagination?.pageSize || 10,
+                      pageSize: pagination?.pageSize || 6,
                       page: currentPage - 1,
                     },
                   },
@@ -192,6 +219,7 @@ const AdminProducts = () => {
         setOpen={setOpenDeleteModal}
         title="Delete Product"
         onDeleteHandler={onDeleteHandler}
+        loader={loader}
       />
     </div>
   );

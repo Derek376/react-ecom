@@ -415,3 +415,19 @@ export const updateProductFromDashboard =
       );
     }
   };
+
+export const deleteProductFromDashboard =
+  (setLoader, productId, toast, setOpenDeleteModal) =>
+  async (dispatch, getState) => {
+    try {
+      setLoader(true);
+      await api.delete(`/admin/products/${productId}`);
+      toast.success("Product deleted successfully");
+      setLoader(false);
+      setOpenDeleteModal(false);
+      dispatch(dashboardProductsAction());
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message || "Failed to delete product");
+    }
+  };
