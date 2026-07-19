@@ -1,8 +1,7 @@
-import React from "react";
 import { FaShoppingCart } from "react-icons/fa";
-import OrderTable from "./OrderTable";
 import { useSelector } from "react-redux";
-import userOrderFilter from "../../../hook/useOrderFilter";
+import userOrderFilter from "../../../hooks/useOrderFilter";
+import OrderTable from "./OrderTable";
 
 const Orders = () => {
   // const adminOrders = [

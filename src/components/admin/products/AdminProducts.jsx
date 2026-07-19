@@ -1,19 +1,19 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { FaBoxOpen } from "react-icons/fa";
 import { MdAddShoppingCart } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { useDashboardProductFilter } from "../../../hook/useProductFilter";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useDashboardProductFilter } from "../../../hooks/useProductFilter";
+import { deleteProductFromDashboard } from "../../../store/actions";
 import { adminProductTableColumns } from "../../helper/tableColumn";
+import DeleteModal from "../../shared/DeleteModal";
 import Loader from "../../shared/Loader";
 import Modal from "../../shared/Modal";
-import AddProductForm from "./AddProductForm";
-import DeleteModal from "../../shared/DeleteModal";
-import { deleteProductFromDashboard } from "../../../store/actions";
-import toast from "react-hot-toast";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import ImageUploadForm from "./ImageUploadForm";
 import ProductViewModal from "../../shared/ProductViewModal";
+import AddProductForm from "./AddProductForm";
+import ImageUploadForm from "./ImageUploadForm";
 
 const AdminProducts = () => {
   // const products = [

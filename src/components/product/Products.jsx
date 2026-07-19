@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { FaExclamationTriangle } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import useProductFilter from "../../hook/useProductFilter";
+import useProductFilter from "../../hooks/useProductFilter";
 import { fetchCategories } from "../../store/actions";
 import Loader from "../shared/Loader";
 import Paginations from "../shared/Paginations";

@@ -21,6 +21,16 @@ const productColBase = {
   cellClassName: "text-slate-700 font-normal border text-center",
 };
 
+const categoryColBase = {
+  disableColumnMenu: true,
+  editable: false,
+  sortable: false,
+  headerAlign: "center",
+  align: "center",
+  headerClassName: "text-black font-semibold text-center border",
+  cellClassName: "text-slate-700 font-normal border text-center",
+};
+
 export const adminOrderTableColumns = (handleEdit) => [
   {
     ...orderColBase,
@@ -209,6 +219,55 @@ export const adminProductTableColumns = (
             className="flex items-center justify-center bg-slate-800 hover:bg-slate-900 text-white px-2.5 h-9 rounded-md"
           >
             <FaEye />
+          </button>
+        </div>
+      );
+    },
+  },
+];
+
+export const categoryTableColumns = (handleEdit, handleDelete) => [
+  {
+    ...categoryColBase,
+    field: "id",
+    headerName: "CategoryId",
+    minWidth: 300,
+    renderHeader: () => <span>CategoryId</span>,
+  },
+  {
+    ...categoryColBase,
+    field: "categoryName",
+    headerName: "Category Name",
+    width: 400,
+    renderHeader: () => <span>Category Name</span>,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    headerAlign: "center",
+    align: "center",
+    editable: false,
+    sortable: false,
+    width: 400,
+    headerClassName: "text-black font-semibold text-center",
+    cellClassName: "text-slate-700 font-normal",
+    renderHeader: () => <span>Action</span>,
+    renderCell: (params) => {
+      return (
+        <div className="flex justify-center space-x-2 h-full pt-2">
+          <button
+            onClick={() => handleEdit(params.row)}
+            className="flex items-center bg-blue-500 text-white px-4 h-9 rounded-md "
+          >
+            <FaEdit className="mr-2" />
+            Edit
+          </button>
+          <button
+            onClick={() => handleDelete(params.row)}
+            className="flex items-center bg-red-500 text-white px-4 h-9 rounded-md"
+          >
+            <FaTrashAlt className="mr-2" />
+            Delete
           </button>
         </div>
       );
