@@ -12,6 +12,7 @@ import DeleteModal from "../../shared/DeleteModal";
 import { deleteProductFromDashboard } from "../../../store/actions";
 import toast from "react-hot-toast";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import ImageUploadForm from "./ImageUploadForm";
 
 const AdminProducts = () => {
   // const products = [
@@ -68,6 +69,7 @@ const AdminProducts = () => {
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [loader, setLoader] = useState(false);
+  const [openImageUploadModal, setOpenImageUploadModal] = useState(false);
 
   useDashboardProductFilter();
 
@@ -93,7 +95,8 @@ const AdminProducts = () => {
   };
 
   const handleImageUpload = (product) => {
-    console.log("Upload image for product:", product);
+    setSelectedProduct(product);
+    setOpenImageUploadModal(true);
   };
 
   const handleProductView = (product) => {
@@ -212,6 +215,17 @@ const AdminProducts = () => {
 
       <Modal open={openAddModal} setOpen={setOpenAddModal} title="Add Product">
         <AddProductForm setOpen={setOpenAddModal} update={false} />
+      </Modal>
+
+      <Modal
+        open={openImageUploadModal}
+        setOpen={setOpenImageUploadModal}
+        title="Upload Product Image"
+      >
+        <ImageUploadForm
+          setOpen={setOpenImageUploadModal}
+          product={selectedProduct}
+        />
       </Modal>
 
       <DeleteModal

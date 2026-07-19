@@ -431,3 +431,21 @@ export const deleteProductFromDashboard =
       toast.error(error?.response?.data?.message || "Failed to delete product");
     }
   };
+
+export const updateProductImageFromDashboard =
+  (formData, productId, toast, setLoader, setOpen, isAdmin) =>
+  async (dispatch) => {
+    try {
+      setLoader(true);
+      const endpoint = isAdmin ? "/admin/products/" : "/seller/products/";
+      await api.put(`${endpoint}${productId}/image`, formData);
+      toast.success("Image upload successful");
+      setLoader(false);
+      setOpen(false);
+      await dispatch(dashboardProductsAction());
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.description || "Product Image upload failed",
+      );
+    }
+  };
