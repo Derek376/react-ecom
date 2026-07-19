@@ -13,6 +13,7 @@ import { deleteProductFromDashboard } from "../../../store/actions";
 import toast from "react-hot-toast";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import ImageUploadForm from "./ImageUploadForm";
+import ProductViewModal from "../../shared/ProductViewModal";
 
 const AdminProducts = () => {
   // const products = [
@@ -70,6 +71,7 @@ const AdminProducts = () => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [loader, setLoader] = useState(false);
   const [openImageUploadModal, setOpenImageUploadModal] = useState(false);
+  const [openProductViewModal, setOpenProductViewModal] = useState(false);
 
   useDashboardProductFilter();
 
@@ -100,7 +102,8 @@ const AdminProducts = () => {
   };
 
   const handleProductView = (product) => {
-    console.log("View product:", product);
+    setSelectedProduct(product);
+    setOpenProductViewModal(true);
   };
 
   const handleSortChange = (sortModel) => {
@@ -235,6 +238,17 @@ const AdminProducts = () => {
         onDeleteHandler={onDeleteHandler}
         loader={loader}
       />
+
+      {selectedProduct && (
+        <ProductViewModal
+          open={openProductViewModal}
+          setOpen={setOpenProductViewModal}
+          product={selectedProduct}
+          isAvailable={
+            selectedProduct?.quantity && Number(selectedProduct.quantity) > 0
+          }
+        />
+      )}
     </div>
   );
 };

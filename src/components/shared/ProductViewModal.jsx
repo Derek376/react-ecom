@@ -28,7 +28,7 @@ function ProductViewModal({ open, setOpen, product, isAvailable }) {
       <Dialog
         open={open}
         as="div"
-        className="relative z-10"
+        className="relative z-50"
         onClose={close}
         __demoMode
       >
