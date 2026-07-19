@@ -8,14 +8,18 @@ import { FaCheck } from "react-icons/fa";
 
 const SelectTextField = ({ label, select, setSelect, lists }) => {
   return (
-    <Listbox value={select} onChange={setSelect}>
+    <Listbox value={select} by="categoryId" onChange={setSelect}>
       <div className="flex flex-col gap-1 w-full">
-        <label htmlFor="id" className="font-semibold text-sm text-slate-800">
+        <label
+          htmlFor="category-select"
+          className="font-semibold text-sm text-slate-800"
+        >
           {label}
         </label>
 
         <div className="relative">
           <ListboxButton
+            id="category-select"
             className={`relative text-sm px-2 py-2 rounded-md border border-slate-700 w-full cursor-default bg-white text-left text-gray-600 sm:text-sm sm:leading-6`}
           >
             <span className="block truncate ps-2">{select?.categoryName}</span>

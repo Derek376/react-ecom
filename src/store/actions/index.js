@@ -416,6 +416,26 @@ export const updateProductFromDashboard =
     }
   };
 
+export const addNewProductFromDashboard =
+  (sendData, toast, reset, setLoader, setOpen) =>
+  async (dispatch, getState) => {
+    try {
+      setLoader(true);
+      await api.post(
+        `/admin/categories/${sendData.categoryId}/product`,
+        sendData,
+      );
+      toast.success("Product created successfully");
+      reset();
+      setOpen(false);
+      await dispatch(dashboardProductsAction());
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to create product");
+    } finally {
+      setLoader(false);
+    }
+  };
+
 export const deleteProductFromDashboard =
   (setLoader, productId, toast, setOpenDeleteModal) =>
   async (dispatch, getState) => {

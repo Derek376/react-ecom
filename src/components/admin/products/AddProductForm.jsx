@@ -4,6 +4,7 @@ import InputField from "../../shared/InputField";
 import { Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  addNewProductFromDashboard,
   fetchCategories,
   updateProductFromDashboard,
 } from "../../../store/actions";
@@ -15,7 +16,10 @@ import ErrorPage from "../../shared/ErrorPage";
 
 const AddProductForm = ({ setOpen, product, update = false }) => {
   const [loader, setLoader] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState({
+    categoryName: "",
+    categoryId: "",
+  });
   const { categories } = useSelector((state) => state.products);
   const { categoryLoader, errorMessage } = useSelector((state) => state.errors);
   const dispatch = useDispatch();
@@ -32,6 +36,13 @@ const AddProductForm = ({ setOpen, product, update = false }) => {
 
   const saveProductHandler = (data) => {
     if (!update) {
+      const sendData = {
+        ...data,
+        categoryId: selectedCategory?.categoryId,
+      };
+      dispatch(
+        addNewProductFromDashboard(sendData, toast, reset, setLoader, setOpen),
+      );
     } else {
       const sendData = {
         ...data,
@@ -61,7 +72,7 @@ const AddProductForm = ({ setOpen, product, update = false }) => {
   }, [dispatch, update]);
 
   useEffect(() => {
-    if (!categoryLoader && categories) {
+    if (!categoryLoader && categories?.length > 0) {
       setSelectedCategory(categories[0]);
     }
   }, [categories, categoryLoader]);
@@ -153,13 +164,15 @@ const AddProductForm = ({ setOpen, product, update = false }) => {
 
         <div className="flex flex-col gap-2 w-full">
           <label
-            htmlFor="desc"
+            htmlFor="description"
             className="font-semibold text-sm  text-slate-800"
           >
             Description
           </label>
           <textarea
+            id="description"
             rows={5}
+            maxLength={255}
             placeholder="Add product description..."
             className={` px-4 py-2 w-full border outline-hidden bg-transparent text-slate-800 rounded-md ${
               errors["description"]?.message
@@ -197,8 +210,10 @@ const AddProductForm = ({ setOpen, product, update = false }) => {
               <div className="flex items-center gap-2">
                 <Spinners /> Loading...
               </div>
+            ) : update ? (
+              "Update"
             ) : (
-              <div>update</div>
+              "Create"
             )}
           </Button>
         </div>
