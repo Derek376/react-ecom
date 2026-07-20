@@ -19,6 +19,8 @@ import Sellers from "./components/admin/sellers/Sellers";
 import Category from "./components/admin/categories/Category";
 import Dashboard from "./components/admin/dashboard/Dashboard";
 import Orders from "./components/admin/orders/Orders";
+import Profile from "./components/profile/Profile";
+import ProfileOrders from "./components/profile/ProfileOrders";
 
 function App() {
   return (
@@ -35,6 +37,8 @@ function App() {
           <Route path="/" element={<PrivateRoute />}>
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/order-confirm" element={<PaymentConfirmation />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/orders" element={<ProfileOrders />} />
           </Route>
 
           <Route path="/" element={<PrivateRoute publicPage />}>

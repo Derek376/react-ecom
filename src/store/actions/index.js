@@ -350,6 +350,24 @@ export const analyticsAction = () => async (dispatch, getState) => {
 const DEFAULT_DASHBOARD_ORDER_QUERY =
   "pageNumber=0&pageSize=6&sortBy=totalAmount&sortOrder=asc";
 
+export const fetchUserOrders = () => async (dispatch) => {
+  try {
+    dispatch({ type: "USER_ORDERS_LOADING" });
+    const { data } = await api.get("/users/orders");
+    dispatch({
+      type: "GET_USER_ORDERS",
+      payload: data,
+    });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: "USER_ORDERS_ERROR",
+      payload:
+        error?.response?.data?.message || "Failed to fetch your orders",
+    });
+  }
+};
+
 export const getOrdersForDashboard =
   (queryString, isAdmin = false) =>
   async (dispatch) => {

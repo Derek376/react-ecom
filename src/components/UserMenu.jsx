@@ -15,8 +15,10 @@ const UserMenu = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const isAdmin = user && user?.roles.includes("ROLE_ADMIN");
-  const isSeller = user && user?.roles.includes("ROLE_SELLER");
+  const roles = user?.roles || [];
+  const isAdmin = roles.includes("ROLE_ADMIN");
+  const isSeller = roles.includes("ROLE_SELLER");
+  const displayName = user?.username || user?.email || "Account";
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -53,7 +55,7 @@ const UserMenu = () => {
         <Link to="/profile">
           <MenuItem className="flex gap-2" onClick={handleClose}>
             <BiUser className="text-xl" />
-            <span className="font-bold text-[16px] mt-1">{user?.username}</span>
+            <span className="font-bold text-[16px] mt-1">{displayName}</span>
           </MenuItem>
         </Link>
 
