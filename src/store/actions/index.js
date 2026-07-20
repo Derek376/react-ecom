@@ -359,10 +359,11 @@ export const getOrdersForDashboard = (queryString,isAdmin = false) => async (dis
 };
 
 export const updateOrderStatusFromDashboard =
-  (orderId, orderStatus, toast, setLoader) => async (dispatch, getState) => {
+  (orderId, orderStatus, toast, setLoader, isAdmin = false, setOpen) => async (dispatch, getState) => {
     try {
       setLoader(true);
-      const { data } = await api.put(`/admin/orders/${orderId}/status`, {
+      const endpoint = isAdmin ? "/admin/orders" : "/seller/orders";
+      const { data } = await api.put(`${endpoint}/${orderId}/status`, {
         status: orderStatus,
       });
       toast.success(data.message || "Order status updated successfully");
@@ -372,6 +373,7 @@ export const updateOrderStatusFromDashboard =
       toast.error(error?.response?.data?.message || "Internal Server Error");
     } finally {
       setLoader(false);
+      setOpen(false);
     }
   };
 

@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import Spinners from "../../shared/Spinners";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateOrderStatusFromDashboard } from "../../../store/actions";
 import toast from "react-hot-toast";
 
@@ -33,7 +33,9 @@ const UpdateOrderForm = ({
   );
   const [error, setError] = useState("");
   const dispatch = useDispatch();
-
+  const { user } = useSelector(state => state.auth);
+  const isAdmin = user && user?.roles?.includes("ROLE_ADMIN");
+  
   const updateOrderStatus = async (e) => {
     e.preventDefault();
     if (!orderStatus) {
@@ -41,7 +43,7 @@ const UpdateOrderForm = ({
       return;
     }
     dispatch(
-      updateOrderStatusFromDashboard(selectedId, orderStatus, toast, setLoader),
+      updateOrderStatusFromDashboard(selectedId, orderStatus, toast, setLoader, isAdmin, setOpen),
     );
   };
 
