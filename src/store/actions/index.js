@@ -347,32 +347,39 @@ export const analyticsAction = () => async (dispatch, getState) => {
   }
 };
 
-export const getOrdersForDashboard = (queryString,isAdmin = false) => async (dispatch) => {
-  try {
-    dispatch({ type: "IS_FETCHING" });
-    const endpoint = isAdmin ? "/admin/orders" : "/seller/orders";
-    const { data } = await api.get(`${endpoint}?${queryString}`);
-    dispatch({
-      type: "GET_ADMIN_ORDERS",
-      payload: data.content,
-      pageNumber: data.pageNumber,
-      pageSize: data.pageSize,
-      totalElements: data.totalElements,
-      totalPages: data.totalPages,
-      lastPage: data.lastPage,
-    });
-    dispatch({ type: "IS_SUCCESS" });
-  } catch (error) {
-    console.log(error);
-    dispatch({
-      type: "IS_ERROR",
-      payload: error?.response?.data?.message || "Failed to fetch orders data",
-    });
-  }
-};
+const DEFAULT_DASHBOARD_ORDER_QUERY =
+  "pageNumber=0&pageSize=6&sortBy=totalAmount&sortOrder=asc";
+
+export const getOrdersForDashboard =
+  (queryString, isAdmin = false) =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: "IS_FETCHING" });
+      const endpoint = isAdmin ? "/admin/orders" : "/seller/orders";
+      const params = queryString || DEFAULT_DASHBOARD_ORDER_QUERY;
+      const { data } = await api.get(`${endpoint}?${params}`);
+      dispatch({
+        type: "GET_ADMIN_ORDERS",
+        payload: data.content,
+        pageNumber: data.pageNumber,
+        pageSize: data.pageSize,
+        totalElements: data.totalElements,
+        totalPages: data.totalPages,
+        lastPage: data.lastPage,
+      });
+      dispatch({ type: "IS_SUCCESS" });
+    } catch (error) {
+      console.log(error);
+      dispatch({
+        type: "IS_ERROR",
+        payload: error?.response?.data?.message || "Failed to fetch orders data",
+      });
+    }
+  };
 
 export const updateOrderStatusFromDashboard =
-  (orderId, orderStatus, toast, setLoader, isAdmin = false, setOpen) => async (dispatch, getState) => {
+  (orderId, orderStatus, toast, setLoader, isAdmin = false, setOpen) =>
+  async (dispatch, getState) => {
     try {
       setLoader(true);
       const endpoint = isAdmin ? "/admin/orders" : "/seller/orders";
@@ -380,7 +387,7 @@ export const updateOrderStatusFromDashboard =
         status: orderStatus,
       });
       toast.success(data.message || "Order status updated successfully");
-      dispatch(getOrdersForDashboard());
+      await dispatch(getOrdersForDashboard(null, isAdmin));
     } catch (error) {
       console.log(error);
       toast.error(error?.response?.data?.message || "Internal Server Error");
