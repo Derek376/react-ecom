@@ -25,12 +25,14 @@ const Checkout = () => {
     setActiveStep((prevStep) => prevStep - 1);
   };
 
+  const hasCheckoutAddress = Boolean(selectedUserCheckoutAddress?.addressId);
+
   const handleNext = () => {
-    if (activeStep === 0 && !selectedUserCheckoutAddress) {
+    if (activeStep === 0 && !hasCheckoutAddress) {
       toast.error("Please select an address to proceed.");
       return;
     }
-    if (activeStep === 1 && (!selectedUserCheckoutAddress || !paymentMethod)) {
+    if (activeStep === 1 && (!hasCheckoutAddress || !paymentMethod)) {
       toast.error("Please select a payment method to proceed.");
       return;
     }
@@ -97,7 +99,7 @@ const Checkout = () => {
             disabled={
               errorMessage ||
               (activeStep === 0
-                ? !selectedUserCheckoutAddress
+                ? !hasCheckoutAddress
                 : activeStep === 1
                   ? !paymentMethod
                   : false)
@@ -105,7 +107,7 @@ const Checkout = () => {
             className={`bg-custom-blue font-semibold px-6 h-10 rounded-md text-white
               ${
                 errorMessage ||
-                (activeStep === 0 && !selectedUserCheckoutAddress) ||
+                (activeStep === 0 && !hasCheckoutAddress) ||
                 (activeStep === 1 && !paymentMethod)
                   ? "opacity-60"
                   : ""

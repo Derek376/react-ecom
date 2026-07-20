@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import api from "../../api/api";
 
 export const fetchProducts = (queryString) => async (dispatch) => {
@@ -293,6 +294,11 @@ export const createStripePaymentSecret =
       toast.error(
         error?.response?.data?.message || "Failed to create client secret",
       );
+      dispatch({
+        type: "IS_ERROR",
+        payload:
+          error?.response?.data?.message || "Failed to create client secret",
+      });
     }
   };
 
@@ -313,6 +319,8 @@ export const stripePaymentConfirmation =
       }
     } catch (error) {
       setErrorMesssage("Payment Failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
