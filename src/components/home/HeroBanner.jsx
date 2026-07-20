@@ -14,10 +14,8 @@ import { bannerLists } from "../../utils";
 import { Link } from "react-router-dom";
 
 const HeroBanner = () => {
-  const colors = ["bg-banner-color1", "bg-banner-color2", "bg-banner-color3"];
-
   return (
-    <div className="py-2 rounded-md ">
+    <div className="py-2 rounded-md">
       <Swiper
         grabCursor={true}
         autoplay={{
@@ -30,33 +28,32 @@ const HeroBanner = () => {
         scrollbar={{ draggable: true }}
         slidesPerView={1}
       >
-        {bannerLists.map((item, i) => (
+        {bannerLists.map((item) => (
           <SwiperSlide key={item.id}>
-            <div
-              className={`carousel-item rounded-md sm:h-125 h-96 ${colors[i]}`}
-            >
-              <div className="flex items-center justify-center">
-                <div className="hidden lg:flex justify-center w-1/2 p-8">
-                  <div className="text-center">
-                    <h3 className="text-3xl text-white font-bold">
-                      {item.title}
-                    </h3>
-                    <h1 className="text-5xl text-white font-bold mt-2">
-                      {item.subtitle}
-                    </h1>
-                    <p className="text-white font-bold mt-4">
-                      {item.description}
-                    </p>
-                    <Link
-                      className="mt-6 inline-block bg-black text-white py-2 px-4 rounded-sm hover:bg-gray-800"
-                      to="/products"
-                    >
-                      Shop
-                    </Link>
-                  </div>
-                </div>
-                <div className="w-full flex justify-center lg:w-1/2 p-4">
-                  <img src={item?.image}></img>
+            <div className="relative h-96 sm:h-125 rounded-md overflow-hidden">
+              <img
+                src={item.image}
+                alt={item.subtitle}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black/20" />
+              <div className="relative z-10 flex h-full items-center px-8 sm:px-12 lg:px-16">
+                <div className="max-w-lg text-white">
+                  <h3 className="text-2xl sm:text-3xl font-bold">
+                    {item.title}
+                  </h3>
+                  <h1 className="text-4xl sm:text-5xl font-bold mt-2">
+                    {item.subtitle}
+                  </h1>
+                  <p className="mt-4 font-medium sm:font-bold">
+                    {item.description}
+                  </p>
+                  <Link
+                    className="mt-6 inline-block bg-black text-white py-2 px-4 rounded-sm hover:bg-gray-800"
+                    to="/products"
+                  >
+                    Shop
+                  </Link>
                 </div>
               </div>
             </div>
