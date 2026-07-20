@@ -38,3 +38,8 @@ export const adminNavigation = [
   { name: "Categories", href: "/admin/categories", icon: FaThList },
   { name: "Sellers", href: "/admin/sellers", icon: FaStore },
 ];
+
+export const sellerNavigation = [
+  { name: "Orders", href: "/admin/orders", icon: FaShoppingCart, current: true },
+  { name: "Products", href: "/admin/products", icon: FaBoxOpen },
+];
