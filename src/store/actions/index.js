@@ -123,6 +123,8 @@ export const authenticateSignInUser =
     try {
       setLoader(true);
       const { data } = await api.post("/auth/signin", sendData);
+      localStorage.removeItem("CHECKOUT_ADDRESS");
+      localStorage.removeItem("client-secret");
       dispatch({ type: "LOGIN_USER", payload: data });
       localStorage.setItem("auth", JSON.stringify(data));
       reset();
@@ -159,6 +161,8 @@ export const registerNewUser =
 export const logOutUser = (navigate) => (dispatch) => {
   dispatch({ type: "LOG_OUT" });
   localStorage.removeItem("auth");
+  localStorage.removeItem("CHECKOUT_ADDRESS");
+  localStorage.removeItem("client-secret");
   navigate("/login");
 };
 
@@ -187,7 +191,7 @@ export const addUpdatedUserAddress =
 export const getUserAddresses = () => async (dispatch, getState) => {
   try {
     dispatch({ type: "IS_FETCHING" });
-    const { data } = await api.get(`/addresses`);
+    const { data } = await api.get(`/users/addresses`);
     dispatch({
       type: "USER_ADDRESS",
       payload: data,
@@ -212,6 +216,7 @@ export const selectUserCheckoutAddress = (address) => (dispatch) => {
 };
 
 export const clearCheckoutAddress = () => (dispatch) => {
+  localStorage.removeItem("CHECKOUT_ADDRESS");
   dispatch({
     type: "REMOVE_CHECKOUT_ADDRESS",
   });
