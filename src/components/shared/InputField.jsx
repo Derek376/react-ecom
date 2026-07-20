@@ -2,6 +2,7 @@ const InputField = ({
   label,
   id,
   type,
+  step,
   errors,
   register,
   required,
@@ -24,6 +25,7 @@ const InputField = ({
       <input
         type={type}
         id={id}
+        step={step}
         placeholder={placeholder}
         className={`${
           className ? className : ""

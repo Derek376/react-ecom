@@ -23,7 +23,8 @@ const AddProductForm = ({ setOpen, product, update = false }) => {
   const { categories } = useSelector((state) => state.products);
   const { categoryLoader, errorMessage } = useSelector((state) => state.errors);
   const dispatch = useDispatch();
-
+  const { user } = useSelector((state) => state.auth);
+  const isAdmin = user && user?.roles?.includes("ROLE_ADMIN");
   const {
     register,
     handleSubmit,
@@ -41,7 +42,7 @@ const AddProductForm = ({ setOpen, product, update = false }) => {
         categoryId: selectedCategory?.categoryId,
       };
       dispatch(
-        addNewProductFromDashboard(sendData, toast, reset, setLoader, setOpen),
+        addNewProductFromDashboard(sendData, toast, reset, setLoader, setOpen, isAdmin),
       );
     } else {
       const sendData = {
@@ -49,7 +50,7 @@ const AddProductForm = ({ setOpen, product, update = false }) => {
         id: product?.id,
       };
       dispatch(
-        updateProductFromDashboard(sendData, toast, reset, setLoader, setOpen),
+        updateProductFromDashboard(sendData, toast, reset, setLoader, setOpen, isAdmin),
       );
     }
   };
@@ -115,6 +116,7 @@ const AddProductForm = ({ setOpen, product, update = false }) => {
               required
               id="price"
               type="number"
+              step="0.01"
               message="This field is required"
               placeholder="Product price"
               register={register}
@@ -154,6 +156,7 @@ const AddProductForm = ({ setOpen, product, update = false }) => {
               required
               id="specialPrice"
               type="number"
+              step="0.01"
               message="This field is required"
               placeholder="Product special price"
               register={register}

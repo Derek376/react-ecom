@@ -64,7 +64,8 @@ const AdminProducts = () => {
   const [searchParams] = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const pathname = useLocation().pathname;
-
+  const { user } = useSelector((state) => state.auth);
+  const isAdmin = user && user?.roles?.includes("ROLE_ADMIN");
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [openAddModal, setOpenAddModal] = useState(false);
@@ -133,6 +134,7 @@ const AdminProducts = () => {
         selectedProduct.id,
         toast,
         setOpenDeleteModal,
+        isAdmin,
       ),
     );
   };

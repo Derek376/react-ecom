@@ -403,10 +403,11 @@ export const dashboardProductsAction = (queryString,isAdmin = false) => async (d
 };
 
 export const updateProductFromDashboard =
-  (sendData, toast, reset, setLoader, setOpen) => async (dispatch) => {
+  (sendData, toast, reset, setLoader, setOpen, isAdmin = false) => async (dispatch) => {
     try {
       setLoader(true);
-      await api.put(`/admin/products/${sendData.id}`, sendData);
+      const endpoint = isAdmin ? "/admin/products" : "/seller/products";
+      await api.put(`${endpoint}/${sendData.id}`, sendData);
       toast.success("Product information updated successfully");
       reset();
       setOpen(false);
@@ -441,11 +442,12 @@ export const addNewProductFromDashboard =
   };
 
 export const deleteProductFromDashboard =
-  (setLoader, productId, toast, setOpenDeleteModal) =>
+  (setLoader, productId, toast, setOpenDeleteModal, isAdmin = false) =>
   async (dispatch, getState) => {
     try {
       setLoader(true);
-      await api.delete(`/admin/products/${productId}`);
+      const endpoint = isAdmin ? "/admin/products" : "/seller/products";
+      await api.delete(`${endpoint}/${productId}`);
       toast.success("Product deleted successfully");
       setLoader(false);
       setOpenDeleteModal(false);
