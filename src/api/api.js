@@ -1,33 +1,52 @@
 import axios from "axios";
 
+const baseURL = `${import.meta.env.VITE_BACK_END_URL}/api`;
+
 const api = axios.create({
-  baseURL: `${import.meta.env.VITE_BACK_END_URL}/api`,
+  baseURL,
   withCredentials: true,
 });
 
-const getStoredJwtToken = () => {
-  try {
-    const auth = localStorage.getItem("auth");
-    if (!auth) {
-      return null;
-    }
-    const parsed = JSON.parse(auth);
-    const token = parsed?.jwtToken;
-    // Ignore legacy values that stored the full Set-Cookie string instead of the JWT
-    if (!token || typeof token !== "string" || token.includes(";")) {
-      return null;
-    }
-    return token;
-  } catch {
-    return null;
-  }
+const csrfClient = axios.create({
+  baseURL,
+  withCredentials: true,
+});
+
+let csrf = null;
+let csrfRequest = null;
+
+export const clearCsrfToken = () => {
+  csrf = null;
+  csrfRequest = null;
 };
 
-api.interceptors.request.use((config) => {
-  const token = getStoredJwtToken();
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+const getCsrfToken = async () => {
+  if (csrf) return csrf;
+
+  if (!csrfRequest) {
+    csrfRequest = csrfClient
+      .get("/auth/csrf")
+      .then(({ data }) => {
+        csrf = data;
+        return data;
+      })
+      .finally(() => {
+        csrfRequest = null;
+      });
   }
+
+  return csrfRequest;
+};
+
+api.interceptors.request.use(async (config) => {
+  const method = config.method?.toLowerCase();
+  const isUnsafeMethod = !["get", "head", "options"].includes(method);
+
+  if (isUnsafeMethod) {
+    const token = await getCsrfToken();
+    config.headers[token.headerName] = token.token;
+  }
+
   return config;
 });
 

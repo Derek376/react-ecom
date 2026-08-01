@@ -3,7 +3,7 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import React, { useState } from "react";
+import { useState } from "react";
 import Skeleton from "../shared/Skeleton";
 
 const PaymentForm = ({ clientSecret, totalPrice }) => {
@@ -56,7 +56,7 @@ const PaymentForm = ({ clientSecret, totalPrice }) => {
             disabled={!stripe || isLoading}
           >
             {!isLoading
-              ? `Pay $${Number(totalPrice).toFixed(2)}`
+              ? `Pay €${Number(totalPrice).toFixed(2)}`
               : "Processing..."}
           </button>
         </>

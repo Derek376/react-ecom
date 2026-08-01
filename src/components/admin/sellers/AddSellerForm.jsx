@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -20,12 +20,7 @@ const AddSellerForm = ({ setOpen }) => {
   });
 
   const addSellerHandler = (data) => {
-    const sendData = {
-      ...data,
-      role: ["seller"],
-    };
-
-    dispatch(addNewDashboardSeller(sendData, toast, reset, setOpen, setLoader));
+    dispatch(addNewDashboardSeller(data, toast, reset, setOpen, setLoader));
   };
 
   return (

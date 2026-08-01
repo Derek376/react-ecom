@@ -21,7 +21,7 @@ Backend API: **[sb-ecom](https://github.com/Derek376/sb-ecom)** (Spring Boot + P
 ## Highlights
 
 - Responsive storefront with product grid, filters, and cart
-- Auth flows with **JWT Bearer token** (works across Vercel ↔ Render; cookies also supported)
+- Auth flows with a **JWT HTTP-only cookie + CSRF protection**
 - Multi-step **checkout** (address → payment method → summary → Stripe)
 - **Profile** + **My Orders** for customers
 - **Admin / Seller** panels (products, categories, orders, sellers, analytics)
@@ -48,7 +48,7 @@ Suggested walkthrough for reviewers:
 | State | Redux Toolkit |
 | Routing | React Router 7 |
 | Styling | Tailwind CSS 4, Material UI 9 |
-| HTTP | Axios (`withCredentials` + Bearer interceptor) |
+| HTTP | Axios (`withCredentials` + CSRF interceptor) |
 | Forms | React Hook Form |
 | Payments | Stripe React / Stripe.js (test mode) |
 | UX | React Hot Toast, Swiper, skeletons |
@@ -151,7 +151,7 @@ SPA deep links on Vercel are handled via `vercel.json` rewrites to `index.html`.
 
 ```
 src/
-├── api/                 # Axios instance + Bearer interceptor
+├── api/                 # Axios instance + CSRF interceptor
 ├── components/
 │   ├── admin/           # Dashboard, products, categories, orders, sellers
 │   ├── auth/            # Login / Register
@@ -179,8 +179,9 @@ This app expects **sb-ecom** with CORS allowing the frontend origin and JWT auth
 | Concern | How it works |
 |---------|----------------|
 | API base | `${VITE_BACK_END_URL}/api` |
-| Auth | Login stores user + `jwtToken` in `localStorage`; Axios sends `Authorization: Bearer …` |
-| Cookies | Still sent (`withCredentials: true`) for same-site / supporting clients |
+| Auth | Login stores only non-sensitive profile data locally; the JWT remains in an HTTP-only cookie |
+| CSRF | Axios fetches `/auth/csrf` and attaches the returned token to state-changing requests |
+| Cookies | Sent with `withCredentials: true`; production uses `Secure` + `SameSite=None` |
 | Images | Product `image` URLs come from the API (`IMAGE_BASE_URL` on the server) |
 
 Typical local workflow:

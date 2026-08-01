@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import api from "../../api/api";
+import api, { clearCsrfToken } from "../../api/api";
 
 export const fetchProducts = (queryString) => async (dispatch) => {
   try {
@@ -123,6 +123,7 @@ export const authenticateSignInUser =
     try {
       setLoader(true);
       const { data } = await api.post("/auth/signin", sendData);
+      clearCsrfToken();
       localStorage.removeItem("CHECKOUT_ADDRESS");
       localStorage.removeItem("client-secret");
       dispatch({ type: "LOGIN_USER", payload: data });
@@ -139,7 +140,7 @@ export const authenticateSignInUser =
   };
 
 export const registerNewUser =
-  (sendData, toast, reset, navigate, setLoader) => async (dispatch) => {
+  (sendData, toast, reset, navigate, setLoader) => async () => {
     try {
       setLoader(true);
       const { data } = await api.post("/auth/signup", sendData);
@@ -158,23 +159,28 @@ export const registerNewUser =
     }
   };
 
-export const logOutUser = (navigate) => (dispatch) => {
-  dispatch({ type: "LOG_OUT" });
-  localStorage.removeItem("auth");
-  localStorage.removeItem("CHECKOUT_ADDRESS");
-  localStorage.removeItem("client-secret");
-  navigate("/login");
+export const logOutUser = (navigate) => async (dispatch) => {
+  try {
+    await api.post("/auth/signout");
+  } finally {
+    clearCsrfToken();
+    dispatch({ type: "LOG_OUT" });
+    localStorage.removeItem("auth");
+    localStorage.removeItem("CHECKOUT_ADDRESS");
+    localStorage.removeItem("client-secret");
+    navigate("/login");
+  }
 };
 
 export const addUpdatedUserAddress =
   (sendData, toast, addressId, setOpenAddressModal) =>
-  async (dispatch, getState) => {
+  async (dispatch) => {
     dispatch({ type: "BUTTON_LOADER" });
     try {
       if (addressId) {
         await api.put(`/addresses/${addressId}`, sendData);
       } else {
-        const { data } = await api.post("/addresses", sendData);
+        await api.post("/addresses", sendData);
       }
       dispatch(getUserAddresses());
       toast.success("Address saved successfully");
@@ -188,7 +194,7 @@ export const addUpdatedUserAddress =
     }
   };
 
-export const getUserAddresses = () => async (dispatch, getState) => {
+export const getUserAddresses = () => async (dispatch) => {
   try {
     dispatch({ type: "IS_FETCHING" });
     const { data } = await api.get(`/users/addresses`);
@@ -223,7 +229,7 @@ export const clearCheckoutAddress = () => (dispatch) => {
 };
 
 export const deleteUserAddress =
-  (toast, addressId, setOpenDeleteModal) => async (dispatch, getState) => {
+  (toast, addressId, setOpenDeleteModal) => async (dispatch) => {
     try {
       dispatch({ type: "BUTTON_LOADER" });
       await api.delete(`/addresses/${addressId}`);
@@ -251,7 +257,7 @@ export const addPaymentMethod = (method) => {
   };
 };
 
-export const createUserCart = (sendCartItems) => async (dispatch, getState) => {
+export const createUserCart = (sendCartItems) => async (dispatch) => {
   try {
     dispatch({ type: "IS_FETCHING" });
     await api.post("/carts/create", sendCartItems);
@@ -287,12 +293,11 @@ export const getUserCart = () => async (dispatch, getState) => {
 };
 
 export const createStripePaymentSecret =
-  (sendData) => async (dispatch, getState) => {
+  (sendData) => async (dispatch) => {
     try {
       dispatch({ type: "IS_FETCHING" });
       const { data } = await api.post("/order/stripe-client-secret", sendData);
       dispatch({ type: "CLIENT_SECRET", payload: data });
-      localStorage.setItem("client-secret", JSON.stringify(data));
       dispatch({ type: "IS_SUCCESS" });
     } catch (error) {
       console.log(error);
@@ -308,28 +313,31 @@ export const createStripePaymentSecret =
   };
 
 export const stripePaymentConfirmation =
-  (sendData, setErrorMesssage, setLoading, toast) =>
-  async (dispatch, getState) => {
+  (sendData, setErrorMesssage, setLoading, setOrderCreated, toast) =>
+  async (dispatch) => {
     try {
-      const response = await api.post("/order/users/payments/online", sendData);
+      const response = await api.post("/orders", sendData);
       if (response.data) {
         localStorage.removeItem("CHECKOUT_ADDRESS");
         localStorage.removeItem("cartItems");
         localStorage.removeItem("client-secret");
         dispatch({ type: "REMOVE_CLIENT_SECRET_ADDRESS" });
         dispatch({ type: "CLEAR_CART" });
+        setOrderCreated(true);
         toast.success("Order Accepted");
       } else {
         setErrorMesssage("Payment Failed. Please try again.");
       }
     } catch (error) {
-      setErrorMesssage("Payment Failed. Please try again.");
+      setErrorMesssage(
+        error?.response?.data?.message || "Payment Failed. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
   };
 
-export const analyticsAction = () => async (dispatch, getState) => {
+export const analyticsAction = () => async (dispatch) => {
   try {
     dispatch({ type: "IS_FETCHING" });
     const { data } = await api.get("/admin/app/analytics");
@@ -397,7 +405,7 @@ export const getOrdersForDashboard =
 
 export const updateOrderStatusFromDashboard =
   (orderId, orderStatus, toast, setLoader, isAdmin = false, setOpen) =>
-  async (dispatch, getState) => {
+  async (dispatch) => {
     try {
       setLoader(true);
       const endpoint = isAdmin ? "/admin/orders" : "/seller/orders";
@@ -468,7 +476,7 @@ export const updateProductFromDashboard =
 
 export const addNewProductFromDashboard =
   (sendData, toast, reset, setLoader, setOpen, isAdmin = false) =>
-  async (dispatch, getState) => {
+  async (dispatch) => {
     try {
       setLoader(true);
       await api.post(
@@ -488,7 +496,7 @@ export const addNewProductFromDashboard =
 
 export const deleteProductFromDashboard =
   (setLoader, productId, toast, setOpenDeleteModal, isAdmin = false) =>
-  async (dispatch, getState) => {
+  async (dispatch) => {
     try {
       setLoader(true);
       const endpoint = isAdmin ? "/admin/products" : "/seller/products";
@@ -549,7 +557,7 @@ export const getAllCategoriesDashboard = (queryString) => async (dispatch) => {
 };
 
 export const createCategoryDashboardAction =
-  (sendData, setOpen, reset, toast) => async (dispatch, getState) => {
+  (sendData, setOpen, reset, toast) => async (dispatch) => {
     try {
       dispatch({ type: "CATEGORY_LOADER" });
       await api.post("/admin/categories", sendData);
@@ -573,7 +581,7 @@ export const createCategoryDashboardAction =
 
 export const updateCategoryDashboardAction =
   (sendData, setOpen, categoryID, reset, toast) =>
-  async (dispatch, getState) => {
+  async (dispatch) => {
     try {
       dispatch({ type: "CATEGORY_LOADER" });
 
@@ -599,7 +607,7 @@ export const updateCategoryDashboardAction =
   };
 
 export const deleteCategoryDashboardAction =
-  (setOpen, categoryID, toast) => async (dispatch, getState) => {
+  (setOpen, categoryID, toast) => async (dispatch) => {
     try {
       dispatch({ type: "CATEGORY_LOADER" });
 
@@ -621,11 +629,10 @@ export const deleteCategoryDashboardAction =
   };
 
 export const getAllSellersDashboard =
-  (queryString) => async (dispatch, getState) => {
-    const { user } = getState().auth;
+  (queryString) => async (dispatch) => {
     try {
       dispatch({ type: "IS_FETCHING" });
-      const { data } = await api.get(`/auth/sellers?${queryString}`);
+      const { data } = await api.get(`/admin/sellers?${queryString}`);
       dispatch({
         type: "GET_SELLERS",
         payload: data["content"],
@@ -650,7 +657,7 @@ export const addNewDashboardSeller =
   (sendData, toast, reset, setOpen, setLoader) => async (dispatch) => {
     try {
       setLoader(true);
-      await api.post("/auth/signup", sendData);
+      await api.post("/admin/sellers", sendData);
       reset();
       toast.success("Seller registered successfully!");
 
