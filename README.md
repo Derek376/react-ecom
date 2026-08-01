@@ -11,7 +11,7 @@ Backend API: **[sb-ecom](https://github.com/Derek376/sb-ecom)** (Spring Boot + P
 | | URL |
 |---|-----|
 | **Storefront** | https://react-ecom-zeta.vercel.app |
-| **API docs (Swagger)** | https://sb-ecom-vbza.onrender.com/swagger-ui/index.html |
+| **API docs (Swagger)** | https://sb-ecom-s41k.onrender.com/swagger-ui/index.html |
 | **Backend repo** | [Derek376/sb-ecom](https://github.com/Derek376/sb-ecom) |
 
 > The API runs on Render’s free tier and may take **30–60s** to wake on the first request.
