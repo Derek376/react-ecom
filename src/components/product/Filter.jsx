@@ -10,75 +10,60 @@ import { useEffect, useState } from "react";
 import { FiArrowDown, FiArrowUp, FiRefreshCw, FiSearch } from "react-icons/fi";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
-const Filter = ({ categories }) => {
+const FilterControls = ({ categories, initialSearchTerm }) => {
   const [searchParams] = useSearchParams();
-  const params = new URLSearchParams(searchParams);
   const pathname = useLocation().pathname;
   const navigate = useNavigate();
 
-  const [category, setCategory] = useState("all");
-  const [sortOrder, setSortOrder] = useState("asc");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+  const categoryFromUrl = searchParams.get("category");
+  const categoryExists = categories.some(
+    (item) => item.categoryName === categoryFromUrl,
+  );
+  const category = categoryExists ? categoryFromUrl : "all";
+  const sortOrder = searchParams.get("sortby") === "desc" ? "desc" : "asc";
+  const searchTermFromUrl = searchParams.get("keyword") || "";
 
   useEffect(() => {
-    const fromUrl = searchParams.get("category");
-    const currentSortOrder = searchParams.get("sortby") || "asc";
-    const currentSearchTerm = searchParams.get("keyword") || "";
+    if (searchTerm === searchTermFromUrl) return;
 
-    setSortOrder(currentSortOrder);
-    setSearchTerm(currentSearchTerm);
-
-    if (categories.length === 0) return;
-
-    if (!fromUrl) {
-      setCategory("all");
-      return;
-    }
-
-    const exists = categories.some((c) => c.categoryName === fromUrl);
-    setCategory(exists ? fromUrl : "all");
-  }, [searchParams, categories]);
-
-  useEffect(() => {
     const handler = setTimeout(() => {
+      const nextParams = new URLSearchParams(searchParams);
       if (searchTerm) {
-        searchParams.set("keyword", searchTerm);
+        nextParams.set("keyword", searchTerm);
       } else {
-        searchParams.delete("keyword");
+        nextParams.delete("keyword");
       }
-      navigate(`${pathname}?${searchParams.toString()}`);
+      nextParams.delete("page");
+      navigate(`${pathname}?${nextParams.toString()}`, { replace: true });
     }, 700);
 
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [searchParams, searchTerm, navigate, pathname]);
+    return () => clearTimeout(handler);
+  }, [navigate, pathname, searchParams, searchTerm, searchTermFromUrl]);
 
   const handleCategoryChange = (event) => {
     const selectedCategory = event.target.value;
+    const nextParams = new URLSearchParams(searchParams);
     if (selectedCategory === "all") {
-      params.delete("category");
+      nextParams.delete("category");
     } else {
-      params.set("category", selectedCategory);
+      nextParams.set("category", selectedCategory);
     }
-    navigate(`${pathname}?${params}`);
-    setCategory(event.target.value);
+    nextParams.delete("page");
+    navigate(`${pathname}?${nextParams}`);
   };
 
   const toggleSortOrder = () => {
-    setSortOrder((prevOrder) => {
-      const newOrder = prevOrder === "asc" ? "desc" : "asc";
-      params.set("sortby", newOrder);
-      navigate(`${pathname}?${params}`);
-      return newOrder;
-    });
+    const nextParams = new URLSearchParams(searchParams);
+    const nextSortOrder = sortOrder === "asc" ? "desc" : "asc";
+    nextParams.set("sortby", nextSortOrder);
+    nextParams.delete("page");
+    navigate(`${pathname}?${nextParams}`);
   };
 
   const handleClearFilters = () => {
-    navigate({ pathname: window.location.pathname });
-    // setCategory("all");
-    // setSortOrder("asc");
-    // setSearchTerm("");
+    setSearchTerm("");
+    navigate(pathname);
   };
 
   return (
@@ -145,6 +130,19 @@ const Filter = ({ categories }) => {
         </button>
       </div>
     </div>
+  );
+};
+
+const Filter = ({ categories }) => {
+  const [searchParams] = useSearchParams();
+  const searchTerm = searchParams.get("keyword") || "";
+
+  return (
+    <FilterControls
+      key={searchTerm}
+      categories={categories}
+      initialSearchTerm={searchTerm}
+    />
   );
 };
 

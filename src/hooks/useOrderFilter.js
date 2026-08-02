@@ -34,8 +34,8 @@ const useOrderFilter = () => {
 
     const queryString = params.toString();
 
-    dispatch(getOrdersForDashboard(queryString,isAdmin));
-  }, [dispatch, searchParams]);
+    dispatch(getOrdersForDashboard(queryString, isAdmin));
+  }, [dispatch, isAdmin, searchParams]);
 };
 
 export default useOrderFilter;

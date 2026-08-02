@@ -1,4 +1,3 @@
-import React from "react";
 import { Toaster } from "react-hot-toast";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
@@ -24,7 +23,7 @@ import ProfileOrders from "./components/profile/ProfileOrders";
 
 function App() {
   return (
-    <React.Fragment>
+    <>
       <Router>
         <Navbar />
         <Routes>
@@ -58,7 +57,7 @@ function App() {
         </Routes>
       </Router>
       <Toaster position="bottom-center" />
-    </React.Fragment>
+    </>
   );
 }
 

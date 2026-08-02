@@ -48,7 +48,6 @@ const Products = () => {
           <div className="flex justify-center pt-10">
             <Paginations
               numberOfPages={pagination.totalPages}
-              totalProducts={pagination.totalElements}
             />
           </div>
         </div>

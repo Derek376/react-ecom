@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../../shared/InputField";
 import { Button } from "@mui/material";
@@ -16,10 +16,7 @@ import ErrorPage from "../../shared/ErrorPage";
 
 const AddProductForm = ({ setOpen, product, update = false }) => {
   const [loader, setLoader] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState({
-    categoryName: "",
-    categoryId: "",
-  });
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const { categories } = useSelector((state) => state.products);
   const { categoryLoader, errorMessage } = useSelector((state) => state.errors);
   const dispatch = useDispatch();
@@ -34,15 +31,23 @@ const AddProductForm = ({ setOpen, product, update = false }) => {
   } = useForm({
     mode: "onTouched",
   });
+  const activeCategory = selectedCategory ?? categories?.[0] ?? null;
 
   const saveProductHandler = (data) => {
     if (!update) {
       const sendData = {
         ...data,
-        categoryId: selectedCategory?.categoryId,
+        categoryId: activeCategory?.categoryId,
       };
       dispatch(
-        addNewProductFromDashboard(sendData, toast, reset, setLoader, setOpen, isAdmin),
+        addNewProductFromDashboard(
+          sendData,
+          toast,
+          reset,
+          setLoader,
+          setOpen,
+          isAdmin,
+        ),
       );
     } else {
       const sendData = {
@@ -50,7 +55,14 @@ const AddProductForm = ({ setOpen, product, update = false }) => {
         id: product?.id,
       };
       dispatch(
-        updateProductFromDashboard(sendData, toast, reset, setLoader, setOpen, isAdmin),
+        updateProductFromDashboard(
+          sendData,
+          toast,
+          reset,
+          setLoader,
+          setOpen,
+          isAdmin,
+        ),
       );
     }
   };
@@ -71,12 +83,6 @@ const AddProductForm = ({ setOpen, product, update = false }) => {
       dispatch(fetchCategories());
     }
   }, [dispatch, update]);
-
-  useEffect(() => {
-    if (!categoryLoader && categories?.length > 0) {
-      setSelectedCategory(categories[0]);
-    }
-  }, [categories, categoryLoader]);
 
   if (categoryLoader) return <Skeleton />;
   if (errorMessage) return <ErrorPage message={errorMessage} />;
@@ -101,7 +107,7 @@ const AddProductForm = ({ setOpen, product, update = false }) => {
             <div className="flex-1 min-w-0">
               <SelectTextField
                 label="Select Category"
-                select={selectedCategory}
+                select={activeCategory}
                 setSelect={setSelectedCategory}
                 lists={categories}
               />{" "}

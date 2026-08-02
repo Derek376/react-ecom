@@ -19,9 +19,7 @@ const ItemContent = ({
   quantity,
   stockQuantity,
   price,
-  discount,
   specialPrice,
-  cartId,
 }) => {
   const [currentQuantity, setCurrentQuantity] = useState(quantity);
   const dispatch = useDispatch();

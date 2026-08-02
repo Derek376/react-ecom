@@ -10,18 +10,12 @@ import Status from "./Status";
 
 function ProductViewModal({ open, setOpen, product, isAvailable }) {
   const {
-    id,
     productName,
     image,
     description,
-    quantity,
     price,
-    discount,
     specialPrice,
   } = product;
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
   return (
     <>
@@ -29,7 +23,7 @@ function ProductViewModal({ open, setOpen, product, isAvailable }) {
         open={open}
         as="div"
         className="relative z-50"
-        onClose={close}
+        onClose={() => setOpen(false)}
         __demoMode
       >
         <DialogBackdrop className="fixed inset-0 bg-gray-900/50 bg-opacity-75 transition-opacity" />

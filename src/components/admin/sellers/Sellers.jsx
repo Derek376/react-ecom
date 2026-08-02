@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { MdPersonAdd } from "react-icons/md";
 
@@ -24,7 +24,7 @@ const Sellers = () => {
   }
 
   return (
-    <React.Fragment>
+    <>
       <div className="pt-6 pb-10 flex justify-end">
         <button
           onClick={() => setOpenModal(true)}
@@ -62,7 +62,7 @@ const Sellers = () => {
       <Modal open={openModal} setOpen={setOpenModal} title="Add New Seller">
         <AddSellerForm setOpen={setOpenModal} />
       </Modal>
-    </React.Fragment>
+    </>
   );
 };
 

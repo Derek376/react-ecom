@@ -52,7 +52,7 @@ const AdminProducts = () => {
   // };
 
   const { products, pagination } = useSelector((state) => state.products);
-  const { isLoading, errorMessage } = useSelector((state) => state.errors);
+  const { isLoading } = useSelector((state) => state.errors);
 
   const emptyProducts = !products || products?.length === 0;
 

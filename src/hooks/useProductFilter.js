@@ -39,7 +39,7 @@ const useProductFilter = () => {
 export const useDashboardProductFilter = () => {
   const [searchParams] = useSearchParams();
   const dispatch = useDispatch();
-  const { user } = useSelector(state => state.auth);
+  const { user } = useSelector((state) => state.auth);
   const isAdmin = user && user?.roles?.includes("ROLE_ADMIN");
 
   useEffect(() => {
@@ -57,8 +57,8 @@ export const useDashboardProductFilter = () => {
 
     const queryString = params.toString();
 
-    dispatch(dashboardProductsAction(queryString,isAdmin));
-  }, [dispatch, searchParams]);
+    dispatch(dashboardProductsAction(queryString, isAdmin));
+  }, [dispatch, isAdmin, searchParams]);
 };
 
 export default useProductFilter;

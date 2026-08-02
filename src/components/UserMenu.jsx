@@ -1,5 +1,5 @@
-import { Avatar, Button, Menu, MenuItem } from "@mui/material";
-import React from "react";
+import { Avatar, Menu, MenuItem } from "@mui/material";
+import { useState } from "react";
 import { BiUser } from "react-icons/bi";
 import { FaShoppingCart, FaUserShield } from "react-icons/fa";
 import { IoExitOutline } from "react-icons/io5";
@@ -9,7 +9,7 @@ import BackDrop from "./BackDrop";
 import { logOutUser } from "../store/actions";
 
 const UserMenu = () => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
