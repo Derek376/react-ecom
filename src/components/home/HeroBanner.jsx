@@ -11,7 +11,7 @@ import "swiper/css/effect-fade";
 import "swiper/css/autoplay";
 
 import { bannerLists } from "../../utils";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 const HeroBanner = () => {
   return (

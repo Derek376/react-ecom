@@ -1,6 +1,6 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { adminOrderTableColumns } from "../../helper/tableColumn";
 import Modal from "../../shared/Modal";
 import UpdateOrderForm from "./UpdateOrderForm";

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { FaBoxOpen, FaShoppingCart } from "react-icons/fa";
 import { MdArrowBack } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { fetchUserOrders } from "../../store/actions";
 import { formatPrice } from "../../utils/formatPrice";
 import Loader from "../shared/Loader";

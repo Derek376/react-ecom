@@ -1,7 +1,7 @@
 import { Badge } from "@mui/material";
 import { useState } from "react";
 import { FaShoppingCart, FaStore, FaSignInAlt } from "react-icons/fa";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router";
 import { RxCross2 } from "react-icons/rx";
 import { IoIosMenu } from "react-icons/io";
 import { useSelector } from "react-redux";

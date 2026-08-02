@@ -7,7 +7,7 @@ import {
   TransitionChild,
 } from "@headlessui/react";
 import { RxCross1 } from "react-icons/rx";
-import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router";
 import { FaBars } from "react-icons/fa";
 
 const AdminLayout = () => {

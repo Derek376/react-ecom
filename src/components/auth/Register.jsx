@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaUserPlus } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import InputField from "../shared/InputField";
 import { useDispatch } from "react-redux";
 import { registerNewUser } from "../../store/actions";

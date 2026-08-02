@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { AiOutlineLogin } from "react-icons/ai";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { authenticateSignInUser } from "../../store/actions";
 import InputField from "../shared/InputField";
 import Spinners from "../shared/Spinners";

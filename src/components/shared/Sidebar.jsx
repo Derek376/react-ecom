@@ -1,6 +1,6 @@
 import { FaTachometerAlt } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router";
 import { adminNavigation, sellerNavigation } from "../../utils";
 import classNames from "classnames";
 

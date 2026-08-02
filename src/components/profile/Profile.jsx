@@ -2,7 +2,7 @@ import { Avatar } from "@mui/material";
 import { BiUser } from "react-icons/bi";
 import { FaEnvelope, FaShoppingCart, FaUserShield } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 const Profile = () => {
   const { user } = useSelector((state) => state.auth);

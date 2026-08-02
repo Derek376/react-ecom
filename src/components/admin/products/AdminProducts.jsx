@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { FaBoxOpen } from "react-icons/fa";
 import { MdAddShoppingCart } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { useDashboardProductFilter } from "../../../hooks/useProductFilter";
 import { deleteProductFromDashboard } from "../../../store/actions";
 import { adminProductTableColumns } from "../../helper/tableColumn";

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 import { useDispatch } from "react-redux";
 import { getAllSellersDashboard } from "../store/actions";
 

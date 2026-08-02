@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router";
 
 const PrivateRoute = ({ publicPage = false, adminOnly = false }) => {
   const { user } = useSelector((state) => state.auth);
