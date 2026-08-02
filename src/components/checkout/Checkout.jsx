@@ -54,7 +54,7 @@ const Checkout = () => {
         ))}
       </Stepper>
 
-      {isLoading ? (
+      {isLoading && activeStep !== steps.length - 1 ? (
         <div className="lg:w-[80%] mx-auto py-5">
           <Skeleton />
         </div>
@@ -119,7 +119,9 @@ const Checkout = () => {
         )}
       </div>
 
-      {errorMessage && <ErrorPage message={errorMessage} />}
+      {errorMessage && activeStep !== steps.length - 1 && (
+        <ErrorPage message={errorMessage} />
+      )}
     </div>
   );
 };

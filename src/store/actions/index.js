@@ -1,4 +1,3 @@
-import toast from "react-hot-toast";
 import api, { clearCsrfToken } from "../../api/api";
 
 export const fetchProducts = (queryString) => async (dispatch) => {
@@ -299,16 +298,16 @@ export const createStripePaymentSecret =
       const { data } = await api.post("/order/stripe-client-secret", sendData);
       dispatch({ type: "CLIENT_SECRET", payload: data });
       dispatch({ type: "IS_SUCCESS" });
+      return { ok: true };
     } catch (error) {
       console.log(error);
-      toast.error(
-        error?.response?.data?.message || "Failed to create client secret",
-      );
+      const message =
+        error?.response?.data?.message || "Failed to create client secret";
       dispatch({
         type: "IS_ERROR",
-        payload:
-          error?.response?.data?.message || "Failed to create client secret",
+        payload: message,
       });
+      return { ok: false, error: message };
     }
   };
 
