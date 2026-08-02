@@ -52,6 +52,7 @@ Suggested walkthrough for reviewers:
 | Forms | React Hook Form |
 | Payments | Stripe React / Stripe.js (test mode) |
 | UX | React Hot Toast, Swiper, skeletons |
+| Testing | Vitest, React Testing Library, jsdom |
 
 ---
 
@@ -124,6 +125,20 @@ App: **http://localhost:5173**
 ```bash
 npm run build
 npm run preview
+```
+
+### 5. Tests
+
+Run the full frontend test suite once:
+
+```bash
+npm test
+```
+
+During development, use watch mode to rerun affected tests after each change:
+
+```bash
+npm run test:watch
 ```
 
 ---
@@ -219,6 +234,8 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
 | `npm run build` | Production build → `dist/` |
 | `npm run preview` | Preview production build |
 | `npm run lint` | ESLint |
+| `npm test` | Run all frontend tests once |
+| `npm run test:watch` | Rerun tests while developing |
 
 ---
 
