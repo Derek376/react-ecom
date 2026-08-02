@@ -12,24 +12,17 @@ const csrfClient = axios.create({
   withCredentials: true,
 });
 
-let csrf = null;
 let csrfRequest = null;
 
 export const clearCsrfToken = () => {
-  csrf = null;
   csrfRequest = null;
 };
 
 const getCsrfToken = async () => {
-  if (csrf) return csrf;
-
   if (!csrfRequest) {
     csrfRequest = csrfClient
       .get("/auth/csrf")
-      .then(({ data }) => {
-        csrf = data;
-        return data;
-      })
+      .then(({ data }) => data)
       .finally(() => {
         csrfRequest = null;
       });
