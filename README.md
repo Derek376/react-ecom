@@ -1,5 +1,7 @@
 # react-ecom
 
+[![Frontend CI](https://github.com/Derek376/react-ecom/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/Derek376/react-ecom/actions/workflows/frontend-ci.yml)
+
 Modern e-commerce storefront built with React — product browsing, cart, checkout, Stripe payments, user profile/orders, and admin/seller dashboards.
 
 Backend API: **[sb-ecom](https://github.com/Derek376/sb-ecom)** (Spring Boot + PostgreSQL)
@@ -236,6 +238,21 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
 | `npm run lint` | ESLint |
 | `npm test` | Run all frontend tests once |
 | `npm run test:watch` | Rerun tests while developing |
+
+---
+
+## Continuous integration
+
+GitHub Actions runs the frontend quality checks on every pull request targeting
+`main` and every push to `main`:
+
+1. Install the locked dependencies with `npm ci`
+2. Run the Vitest suite
+3. Run ESLint
+4. Build the production bundle
+
+The workflow is defined in `.github/workflows/frontend-ci.yml` and requires no
+repository secrets.
 
 ---
 
