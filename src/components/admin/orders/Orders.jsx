@@ -166,7 +166,7 @@ const Orders = () => {
   userOrderFilter();
 
   if (dashboardOrdersLoading) {
-    return <Loader text="Loading orders..." />;
+    return <Loader />;
   }
 
   if (dashboardOrdersError) {
@@ -176,7 +176,7 @@ const Orders = () => {
   // The first request starts in an effect, after the initial render. Treat null
   // as "not loaded yet" so it is never mistaken for a successful empty result.
   if (adminOrders === null) {
-    return <Loader text="Loading orders..." />;
+    return <Loader />;
   }
 
   const emptyOrders = adminOrders.length === 0;
