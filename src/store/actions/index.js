@@ -1,9 +1,12 @@
 import api, { clearCsrfToken } from "../../api/api";
 
-export const fetchProducts = (queryString) => async (dispatch) => {
+export const fetchProducts = (queryString = "") => async (dispatch) => {
   try {
     dispatch({ type: "IS_FETCHING" });
-    const { data } = await api.get(`/public/products?${queryString}`);
+    const endpoint = queryString
+      ? `/public/products?${queryString}`
+      : "/public/products";
+    const { data } = await api.get(endpoint);
     dispatch({
       type: "FETCH_PRODUCTS",
       payload: data.content,

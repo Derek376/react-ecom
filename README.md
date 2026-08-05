@@ -13,10 +13,10 @@ Backend API: **[sb-ecom](https://github.com/Derek376/sb-ecom)** (Spring Boot + P
 | | URL |
 |---|-----|
 | **Storefront** | https://react-ecom-zeta.vercel.app |
-| **API docs (Swagger)** | https://sb-ecom-s41k.onrender.com/swagger-ui/index.html |
+| **API docs (Swagger)** | https://p01--sb-ecom--ccxd59t2vl2x.code.run/swagger-ui/index.html |
 | **Backend repo** | [Derek376/sb-ecom](https://github.com/Derek376/sb-ecom) |
 
-> The API runs on Render’s free tier and may take **30–60s** to wake on the first request.
+> The Spring Boot API is deployed as a Docker service on Northflank.
 
 ---
 
@@ -27,7 +27,7 @@ Backend API: **[sb-ecom](https://github.com/Derek376/sb-ecom)** (Spring Boot + P
 - Multi-step **checkout** (address → payment method → summary → Stripe)
 - **Profile** + **My Orders** for customers
 - **Admin / Seller** panels (products, categories, orders, sellers, analytics)
-- Deployed on **Vercel** against a live Spring Boot API on **Render** + **Neon** Postgres
+- Deployed on **Vercel** against a live Spring Boot API on **Northflank** + **Neon** Postgres
 
 ---
 
@@ -216,13 +216,13 @@ Typical local workflow:
 2. Set Production env vars:
 
 ```env
-VITE_BACK_END_URL=https://sb-ecom-vbza.onrender.com
+VITE_BACK_END_URL=https://p01--sb-ecom--ccxd59t2vl2x.code.run
 VITE_FRONTEND_URL=https://YOUR-VERCEL-APP.vercel.app
 VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
 ```
 
-3. Deploy — then set the same `VITE_FRONTEND_URL` to the real domain and **Redeploy**
-4. On Render, set `FRONTEND_URL` to that exact Vercel origin (no trailing slash) and redeploy the API
+3. Deploy, then set `VITE_FRONTEND_URL` to the real Vercel domain and **Redeploy**. Vite embeds `VITE_*` variables during the build, so changing a value requires a new deployment.
+4. In Northflank, set `FRONTEND_URL` to that exact Vercel origin (no trailing slash) and redeploy the backend service.
 
 `vercel.json` already rewrites all routes to `index.html` so `/profile`, `/order-confirm`, etc. work on refresh.
 
