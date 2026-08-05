@@ -1,6 +1,8 @@
 const initialState = {
   adminOrders: null,
   pagination: {},
+  dashboardOrdersLoading: false,
+  dashboardOrdersError: null,
   userOrders: [],
   userOrdersLoading: false,
   userOrdersError: null,
@@ -8,10 +10,18 @@ const initialState = {
 
 export const orderReducer = (state = initialState, action) => {
   switch (action.type) {
+    case "DASHBOARD_ORDERS_LOADING":
+      return {
+        ...state,
+        dashboardOrdersLoading: true,
+        dashboardOrdersError: null,
+      };
     case "GET_ADMIN_ORDERS":
       return {
         ...state,
         adminOrders: action.payload,
+        dashboardOrdersLoading: false,
+        dashboardOrdersError: null,
         pagination: {
           ...state.pagination,
           pageNumber: action.pageNumber,
@@ -20,6 +30,12 @@ export const orderReducer = (state = initialState, action) => {
           totalPages: action.totalPages,
           lastPage: action.lastPage,
         },
+      };
+    case "DASHBOARD_ORDERS_ERROR":
+      return {
+        ...state,
+        dashboardOrdersLoading: false,
+        dashboardOrdersError: action.payload,
       };
     case "USER_ORDERS_LOADING":
       return {

@@ -1,6 +1,8 @@
 import { FaShoppingCart } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import userOrderFilter from "../../../hooks/useOrderFilter";
+import ErrorPage from "../../shared/ErrorPage";
+import Loader from "../../shared/Loader";
 import OrderTable from "./OrderTable";
 
 const Orders = () => {
@@ -154,11 +156,30 @@ const Orders = () => {
   //   lastPage: true,
   // };
 
-  const { adminOrders, pagination } = useSelector((state) => state.order);
+  const {
+    adminOrders,
+    pagination,
+    dashboardOrdersLoading,
+    dashboardOrdersError,
+  } = useSelector((state) => state.order);
 
   userOrderFilter();
 
-  const emptyOrders = !adminOrders || adminOrders.length === 0;
+  if (dashboardOrdersLoading) {
+    return <Loader text="Loading orders..." />;
+  }
+
+  if (dashboardOrdersError) {
+    return <ErrorPage message={dashboardOrdersError} />;
+  }
+
+  // The first request starts in an effect, after the initial render. Treat null
+  // as "not loaded yet" so it is never mistaken for a successful empty result.
+  if (adminOrders === null) {
+    return <Loader text="Loading orders..." />;
+  }
+
+  const emptyOrders = adminOrders.length === 0;
 
   return (
     <div className="pb-6 pt-20">

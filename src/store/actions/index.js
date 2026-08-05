@@ -382,7 +382,7 @@ export const getOrdersForDashboard =
   (queryString, isAdmin = false) =>
   async (dispatch) => {
     try {
-      dispatch({ type: "IS_FETCHING" });
+      dispatch({ type: "DASHBOARD_ORDERS_LOADING" });
       const endpoint = isAdmin ? "/admin/orders" : "/seller/orders";
       const params = queryString || DEFAULT_DASHBOARD_ORDER_QUERY;
       const { data } = await api.get(`${endpoint}?${params}`);
@@ -395,11 +395,10 @@ export const getOrdersForDashboard =
         totalPages: data.totalPages,
         lastPage: data.lastPage,
       });
-      dispatch({ type: "IS_SUCCESS" });
     } catch (error) {
       console.log(error);
       dispatch({
-        type: "IS_ERROR",
+        type: "DASHBOARD_ORDERS_ERROR",
         payload: error?.response?.data?.message || "Failed to fetch orders data",
       });
     }
