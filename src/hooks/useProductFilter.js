@@ -2,6 +2,10 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router";
 import { dashboardProductsAction, fetchProducts } from "../store/actions";
+import {
+  buildDashboardApiQuery,
+  dashboardTableConfigs,
+} from "../utils/dashboardTableQuery";
 
 const useProductFilter = () => {
   const [searchParams] = useSearchParams();
@@ -43,19 +47,10 @@ export const useDashboardProductFilter = () => {
   const isAdmin = user && user?.roles?.includes("ROLE_ADMIN");
 
   useEffect(() => {
-    const params = new URLSearchParams();
-
-    const currentPage = searchParams.get("page")
-      ? Number(searchParams.get("page"))
-      : 1;
-
-    params.set("pageNumber", currentPage - 1);
-    const sortOrder = searchParams.get("sortby") || "asc";
-    params.set("sortBy", "price");
-    params.set("sortOrder", sortOrder);
-    params.set("pageNumber", currentPage - 1);
-
-    const queryString = params.toString();
+    const queryString = buildDashboardApiQuery(
+      searchParams,
+      dashboardTableConfigs.products,
+    );
 
     dispatch(dashboardProductsAction(queryString, isAdmin));
   }, [dispatch, isAdmin, searchParams]);

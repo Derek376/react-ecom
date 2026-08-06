@@ -2,26 +2,23 @@ import { useEffect } from "react";
 import { useSearchParams } from "react-router";
 import { useDispatch } from "react-redux";
 
-import { fetchCategories } from "../store/actions";
+import { getAllCategoriesDashboard } from "../store/actions";
+import {
+  buildDashboardApiQuery,
+  dashboardTableConfigs,
+} from "../utils/dashboardTableQuery";
 
 const useCategoryFilter = () => {
   const [searchParams] = useSearchParams(); // Access search params from the URL
   const dispatch = useDispatch(); // Get the dispatch function to call actions
 
   useEffect(() => {
-    const params = new URLSearchParams(); // Create new URLSearchParams object
+    const queryString = buildDashboardApiQuery(
+      searchParams,
+      dashboardTableConfigs.categories,
+    );
 
-    // Get current page from URL search params, defaulting to 1 if not present
-    const currentPage = searchParams.get("page")
-      ? Number(searchParams.get("page"))
-      : 1;
-    params.set("pageNumber", currentPage - 1); // Pagination starts from 0 for API
-
-    // Convert params to a query string
-    const queryString = params.toString();
-
-    // Dispatch action to fetch categories using the constructed query string
-    dispatch(fetchCategories(queryString));
+    dispatch(getAllCategoriesDashboard(queryString));
   }, [dispatch, searchParams]);
 };
 

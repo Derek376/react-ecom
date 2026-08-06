@@ -4,14 +4,16 @@ import toast from "react-hot-toast";
 import { FaBoxOpen } from "react-icons/fa";
 import { MdAddShoppingCart } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { useDashboardProductFilter } from "../../../hooks/useProductFilter";
+import useDashboardTableQuery from "../../../hooks/useDashboardTableQuery";
 import { deleteProductFromDashboard } from "../../../store/actions";
+import { dashboardTableConfigs } from "../../../utils/dashboardTableQuery";
 import { adminProductTableColumns } from "../../helper/tableColumn";
 import DeleteModal from "../../shared/DeleteModal";
 import Loader from "../../shared/Loader";
 import Modal from "../../shared/Modal";
 import ProductViewModal from "../../shared/ProductViewModal";
+import TableSortControls from "../../shared/TableSortControls";
 import AddProductForm from "./AddProductForm";
 import ImageUploadForm from "./ImageUploadForm";
 
@@ -56,14 +58,7 @@ const AdminProducts = () => {
 
   const emptyProducts = !products || products?.length === 0;
 
-  const [currentPage, setCurrentPage] = useState(
-    pagination?.pageNumber + 1 || 1,
-  );
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const params = new URLSearchParams(searchParams);
-  const pathname = useLocation().pathname;
   const { user } = useSelector((state) => state.auth);
   const isAdmin = user && user?.roles?.includes("ROLE_ADMIN");
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
@@ -75,6 +70,14 @@ const AdminProducts = () => {
   const [openProductViewModal, setOpenProductViewModal] = useState(false);
 
   useDashboardProductFilter();
+  const {
+    page,
+    sortBy,
+    sortOrder,
+    changePage,
+    changeSortBy,
+    changeSortOrder,
+  } = useDashboardTableQuery(dashboardTableConfigs.products);
 
   const tableRecords = products?.map((product) => ({
     id: product.productId,
@@ -107,24 +110,8 @@ const AdminProducts = () => {
     setOpenProductViewModal(true);
   };
 
-  const handleSortChange = (sortModel) => {
-    if (sortModel.length > 0) {
-      const { sort } = sortModel[0];
-      params.set("sortby", sort);
-    } else {
-      params.delete("sortby");
-    }
-
-    params.set("page", "1");
-    setCurrentPage(1);
-    navigate(`${pathname}?${params}`);
-  };
-
   const handlePaginationChange = (paginationModel) => {
-    const page = paginationModel.page + 1;
-    setCurrentPage(page);
-    params.set("page", page.toString());
-    navigate(`${pathname}?${params}`);
+    changePage(paginationModel.page + 1);
   };
 
   const onDeleteHandler = () => {
@@ -169,6 +156,14 @@ const AdminProducts = () => {
             </div>
           ) : (
             <div className="max-w-full">
+              <TableSortControls
+                tableName="products"
+                sortBy={sortBy}
+                sortOrder={sortOrder}
+                sortOptions={dashboardTableConfigs.products.sortOptions}
+                onSortByChange={changeSortBy}
+                onSortOrderChange={changeSortOrder}
+              />
               <DataGrid
                 className="w-full"
                 rows={tableRecords}
@@ -179,27 +174,16 @@ const AdminProducts = () => {
                   handleProductView,
                 )}
                 paginationMode="server"
-                sortingMode="server"
-                onSortModelChange={handleSortChange}
-                rowCount={pagination?.totalElements || 0}
-                initialState={{
-                  pagination: {
-                    paginationModel: {
-                      pageSize: pagination?.pageSize || 6,
-                      page: currentPage - 1,
-                    },
-                  },
+                rowCount={pagination?.totalElements ?? 0}
+                paginationModel={{
+                  pageSize: pagination?.pageSize || 6,
+                  page: page - 1,
                 }}
                 onPaginationModelChange={handlePaginationChange}
                 disableRowSelectionOnClick
                 disableColumnResize
+                disableColumnSorting
                 pageSizeOptions={[pagination?.pageSize || 10]}
-                paginationOption={{
-                  showFirstButton: true,
-                  showLastButton: true,
-                  hideNextButton: currentPage === pagination?.totalPages,
-                  hidePrevButton: currentPage === 1,
-                }}
               />
             </div>
           )}

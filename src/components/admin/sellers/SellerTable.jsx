@@ -1,14 +1,18 @@
-import { useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { DataGrid } from "@mui/x-data-grid";
+import useDashboardTableQuery from "../../../hooks/useDashboardTableQuery";
+import { dashboardTableConfigs } from "../../../utils/dashboardTableQuery";
 import { sellerTableColumns } from "../../helper/tableColumn";
+import TableSortControls from "../../shared/TableSortControls";
 
 const SellerTable = ({ sellers, pagination }) => {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const pathname = useLocation().pathname;
-  const params = new URLSearchParams(searchParams);
-  const [currentPage, setCurrentPage] = useState(pagination?.pageNumber || 1);
+  const {
+    page,
+    sortBy,
+    sortOrder,
+    changePage,
+    changeSortBy,
+    changeSortOrder,
+  } = useDashboardTableQuery(dashboardTableConfigs.sellers);
 
   const tableRecords = sellers?.map((item) => {
     return {
@@ -19,40 +23,36 @@ const SellerTable = ({ sellers, pagination }) => {
   });
 
   const handlePaginationChange = (paginationModel) => {
-    const page = paginationModel.page + 1;
-    setCurrentPage(page);
-
-    params.set("page", page.toString());
-    navigate(`${pathname}?${params}`);
+    changePage(paginationModel.page + 1);
   };
 
   return (
     <div>
       <div className="w-full mx-auto">
+        <TableSortControls
+          tableName="sellers"
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          sortOptions={dashboardTableConfigs.sellers.sortOptions}
+          onSortByChange={changeSortBy}
+          onSortOrderChange={changeSortOrder}
+        />
         <DataGrid
           className="w-full"
           rows={tableRecords}
           paginationMode="server"
-          rowCount={pagination?.totalElements || 0}
+          rowCount={pagination?.totalElements ?? 0}
           columns={sellerTableColumns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: pagination?.pageSize || 10,
-                page: currentPage - 1,
-              },
-            },
+          paginationModel={{
+            pageSize: pagination?.pageSize || 10,
+            page: page - 1,
           }}
           onPaginationModelChange={handlePaginationChange}
           disableRowSelectionOnClick
           disableColumnResize
+          disableColumnSorting
           pagination
           pageSizeOptions={[pagination?.pageSize || 10]}
-          paginationOptions={{
-            showFirstButton: true,
-            showLastButton: true,
-            hideNextButton: currentPage === pagination?.totalPages,
-          }}
         />
       </div>
     </div>

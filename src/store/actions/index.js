@@ -1,4 +1,15 @@
 import api, { clearCsrfToken } from "../../api/api";
+import {
+  buildDashboardApiQuery,
+  dashboardTableConfigs,
+} from "../../utils/dashboardTableQuery";
+
+const getDashboardQuery = (queryString, config) =>
+  queryString ||
+  buildDashboardApiQuery(
+    typeof window === "undefined" ? "" : window.location.search,
+    config,
+  );
 
 export const fetchProducts = (queryString = "") => async (dispatch) => {
   try {
@@ -357,9 +368,6 @@ export const analyticsAction = () => async (dispatch) => {
   }
 };
 
-const DEFAULT_DASHBOARD_ORDER_QUERY =
-  "pageNumber=0&pageSize=6&sortBy=totalAmount&sortOrder=asc";
-
 export const fetchUserOrders = () => async (dispatch) => {
   try {
     dispatch({ type: "USER_ORDERS_LOADING" });
@@ -384,7 +392,10 @@ export const getOrdersForDashboard =
     try {
       dispatch({ type: "DASHBOARD_ORDERS_LOADING" });
       const endpoint = isAdmin ? "/admin/orders" : "/seller/orders";
-      const params = queryString || DEFAULT_DASHBOARD_ORDER_QUERY;
+      const params = getDashboardQuery(
+        queryString,
+        dashboardTableConfigs.orders,
+      );
       const { data } = await api.get(`${endpoint}?${params}`);
       dispatch({
         type: "GET_ADMIN_ORDERS",
@@ -424,16 +435,16 @@ export const updateOrderStatusFromDashboard =
     }
   };
 
-const DEFAULT_DASHBOARD_PRODUCT_QUERY =
-  "pageNumber=0&pageSize=6&sortBy=productId&sortOrder=asc";
-
 export const dashboardProductsAction =
   (queryString, isAdmin = false) =>
   async (dispatch) => {
     try {
       dispatch({ type: "IS_FETCHING" });
       const endpoint = isAdmin ? "/admin/products" : "/seller/products";
-      const params = queryString || DEFAULT_DASHBOARD_PRODUCT_QUERY;
+      const params = getDashboardQuery(
+        queryString,
+        dashboardTableConfigs.products,
+      );
       const { data } = await api.get(`${endpoint}?${params}`);
       dispatch({
         type: "FETCH_PRODUCTS",
@@ -536,7 +547,11 @@ export const updateProductImageFromDashboard =
 export const getAllCategoriesDashboard = (queryString) => async (dispatch) => {
   dispatch({ type: "CATEGORY_LOADER" });
   try {
-    const { data } = await api.get(`/public/categories?${queryString}`);
+    const params = getDashboardQuery(
+      queryString,
+      dashboardTableConfigs.categories,
+    );
+    const { data } = await api.get(`/public/categories?${params}`);
     dispatch({
       type: "FETCH_CATEGORIES",
       payload: data["content"],
@@ -633,7 +648,11 @@ export const getAllSellersDashboard =
   (queryString) => async (dispatch) => {
     try {
       dispatch({ type: "IS_FETCHING" });
-      const { data } = await api.get(`/admin/sellers?${queryString}`);
+      const params = getDashboardQuery(
+        queryString,
+        dashboardTableConfigs.sellers,
+      );
+      const { data } = await api.get(`/admin/sellers?${params}`);
       dispatch({
         type: "GET_SELLERS",
         payload: data["content"],

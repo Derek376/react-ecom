@@ -1,22 +1,24 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router";
+import useDashboardTableQuery from "../../../hooks/useDashboardTableQuery";
+import { dashboardTableConfigs } from "../../../utils/dashboardTableQuery";
 import { adminOrderTableColumns } from "../../helper/tableColumn";
 import Modal from "../../shared/Modal";
+import TableSortControls from "../../shared/TableSortControls";
 import UpdateOrderForm from "./UpdateOrderForm";
 
 const OrderTable = ({ adminOrders, pagination }) => {
   const [updateOpenModal, setUpdateOpenModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState("");
   const [loader, setLoader] = useState(false);
-  const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState(
-    pagination?.pageNumber + 1 || 1,
-  );
-
-  const [searchParams] = useSearchParams();
-  const params = new URLSearchParams(searchParams);
-  const pathname = useLocation().pathname;
+  const {
+    page,
+    sortBy,
+    sortOrder,
+    changePage,
+    changeSortBy,
+    changeSortOrder,
+  } = useDashboardTableQuery(dashboardTableConfigs.orders);
 
   const tableRecords = adminOrders?.map((order) => ({
     id: order.orderId,
@@ -27,28 +29,12 @@ const OrderTable = ({ adminOrders, pagination }) => {
   }));
 
   const handlePaginationChange = (paginationModel) => {
-    const page = paginationModel.page + 1;
-    setCurrentPage(page);
-    params.set("page", page.toString());
-    navigate(`${pathname}?${params}`);
+    changePage(paginationModel.page + 1);
   };
 
   const handleEdit = (order) => {
     setSelectedItem(order);
     setUpdateOpenModal(true);
-  };
-
-  const handleSortChange = (sortModel) => {
-    if (sortModel.length > 0) {
-      const { sort } = sortModel[0];
-      params.set("sortby", sort);
-    } else {
-      params.delete("sortby");
-    }
-
-    params.set("page", "1");
-    setCurrentPage(1);
-    navigate(`${pathname}?${params}`);
   };
 
   return (
@@ -58,32 +44,29 @@ const OrderTable = ({ adminOrders, pagination }) => {
       </h1>
 
       <div>
+        <TableSortControls
+          tableName="orders"
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          sortOptions={dashboardTableConfigs.orders.sortOptions}
+          onSortByChange={changeSortBy}
+          onSortOrderChange={changeSortOrder}
+        />
         <DataGrid
           className="w-full"
           rows={tableRecords}
           columns={adminOrderTableColumns(handleEdit)}
           paginationMode="server"
-          sortingMode="server"
-          onSortModelChange={handleSortChange}
-          rowCount={pagination?.totalElements || 0}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: pagination?.pageSize || 10,
-                page: currentPage - 1,
-              },
-            },
+          rowCount={pagination?.totalElements ?? 0}
+          paginationModel={{
+            pageSize: pagination?.pageSize || 10,
+            page: page - 1,
           }}
           onPaginationModelChange={handlePaginationChange}
           disableRowSelectionOnClick
           disableColumnResize
+          disableColumnSorting
           pageSizeOptions={[pagination?.pageSize || 10]}
-          paginationOption={{
-            showFirstButton: true,
-            showLastButton: true,
-            hideNextButton: currentPage === pagination?.totalPages,
-            hidePrevButton: currentPage === 1,
-          }}
         />
       </div>
 

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { DataGrid } from "@mui/x-data-grid";
 import { FaFolderOpen, FaThList } from "react-icons/fa";
 import toast from "react-hot-toast";
@@ -12,14 +11,12 @@ import { DeleteModal } from "../../../components/shared/DeleteModal";
 import useCategoryFilter from "../../../hooks/useCategoryFilter";
 import ErrorPage from "../../shared/ErrorPage";
 import { deleteCategoryDashboardAction } from "../../../store/actions";
+import useDashboardTableQuery from "../../../hooks/useDashboardTableQuery";
+import { dashboardTableConfigs } from "../../../utils/dashboardTableQuery";
 import { categoryTableColumns } from "../../helper/tableColumn";
+import TableSortControls from "../../shared/TableSortControls";
 
 const Category = () => {
-  const [searchParams] = useSearchParams();
-  const pathname = useLocation().pathname;
-  const params = new URLSearchParams(searchParams);
-  const navigate = useNavigate();
-
   const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
@@ -28,9 +25,14 @@ const Category = () => {
 
   const { categoryLoader, errorMessage } = useSelector((state) => state.errors);
   const { categories, pagination } = useSelector((state) => state.products);
-  const [currentPage, setCurrentPage] = useState(
-    pagination?.pageNumber + 1 || 1,
-  );
+  const {
+    page,
+    sortBy,
+    sortOrder,
+    changePage,
+    changeSortBy,
+    changeSortOrder,
+  } = useDashboardTableQuery(dashboardTableConfigs.categories);
 
   // Calling the `useCategoryFilter` custom hook to handle category fetching and pagination based on the current URL parameters.
   useCategoryFilter();
@@ -62,11 +64,7 @@ const Category = () => {
   };
 
   const handlePaginationChange = (paginationModel) => {
-    const page = paginationModel.page + 1; // Adjust to 1-based index
-    setCurrentPage(page);
-
-    params.set("page", page.toString());
-    navigate(`${pathname}?${params}`);
+    changePage(paginationModel.page + 1);
   };
 
   const emptyCategories = !categories || categories?.length === 0;
@@ -103,30 +101,30 @@ const Category = () => {
             </div>
           ) : (
             <div className="w-full mx-auto">
+              <TableSortControls
+                tableName="categories"
+                sortBy={sortBy}
+                sortOrder={sortOrder}
+                sortOptions={dashboardTableConfigs.categories.sortOptions}
+                onSortByChange={changeSortBy}
+                onSortOrderChange={changeSortOrder}
+              />
               <DataGrid
                 className="w-full"
                 rows={tableRecords}
                 columns={categoryTableColumns(handleEdit, handleDelete)}
                 paginationMode="server"
-                rowCount={pagination?.totalElements || 0}
-                initialState={{
-                  pagination: {
-                    paginationModel: {
-                      pageSize: pagination?.pageSize || 10,
-                      page: currentPage - 1,
-                    },
-                  },
+                rowCount={pagination?.totalElements ?? 0}
+                paginationModel={{
+                  pageSize: pagination?.pageSize || 10,
+                  page: page - 1,
                 }}
                 onPaginationModelChange={handlePaginationChange}
                 disableRowSelectionOnClick
                 disableColumnResize
+                disableColumnSorting
                 pageSizeOptions={[pagination?.pageSize || 10]}
                 pagination
-                paginationOptions={{
-                  showFirstButton: true,
-                  showLastButton: true,
-                  hideNextButton: currentPage === pagination?.totalPages,
-                }}
               />
             </div>
           )}
