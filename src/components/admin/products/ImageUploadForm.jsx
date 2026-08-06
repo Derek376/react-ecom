@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import Spinners from "../../shared/Spinners";
 import { Button } from "@mui/material";
@@ -6,9 +6,14 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProductImageFromDashboard } from "../../../store/actions";
 
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+
+const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+
 const ImageUploadForm = ({ setOpen, product }) => {
   const [loader, setLoader] = useState(false);
-  const fileInputRef = useRef();
+  const fileInputRef = useRef(null);
+  const previewUrlRef = useRef(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const dispatch = useDispatch();
@@ -16,31 +21,56 @@ const ImageUploadForm = ({ setOpen, product }) => {
   const { user } = useSelector((state) => state.auth);
   const isAdmin = user && user?.roles?.includes("ROLE_ADMIN");
 
-  const onHandleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (
-      file &&
-      [
-        "image/jpeg",
-        "image/jpg",
-        "image/png",
-        "image/svg+xml",
-        "image/webp",
-      ].includes(file.type)
-    ) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-      setSelectedFile(file);
-    } else {
-      toast.error(
-        "Please select a valid image file (.jpeg, .jpg, .png, .svg, .webp)",
-      );
-      setPreviewImage(null);
-      setSelectedFile(null);
+  useEffect(
+    () => () => {
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+      }
+    },
+    [],
+  );
+
+  const resetSelectedImage = () => {
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current);
+      previewUrlRef.current = null;
     }
+
+    setSelectedFile(null);
+    setPreviewImage(null);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const onHandleImageChange = (event) => {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+      toast.error("Only JPEG, PNG and WebP images are supported.");
+      resetSelectedImage();
+      return;
+    }
+
+    if (file.size > MAX_IMAGE_SIZE) {
+      toast.error("Image must be smaller than 5 MB.");
+      resetSelectedImage();
+      return;
+    }
+
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current);
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    previewUrlRef.current = objectUrl;
+    setSelectedFile(file);
+    setPreviewImage(objectUrl);
   };
 
   const addNewImageHandler = async (event) => {
@@ -66,9 +96,7 @@ const ImageUploadForm = ({ setOpen, product }) => {
   };
 
   const handleClearImage = () => {
-    setPreviewImage(null);
-    setSelectedFile(null);
-    fileInputRef.current.value = null;
+    resetSelectedImage();
   };
 
   return (
@@ -83,7 +111,7 @@ const ImageUploadForm = ({ setOpen, product }) => {
               ref={fileInputRef}
               onChange={onHandleImageChange}
               className="hidden"
-              accept=".jpeg, .jpg, .png, .svg, .webp"
+              accept="image/jpeg,image/png,image/webp"
             />
           </label>
 
@@ -117,7 +145,7 @@ const ImageUploadForm = ({ setOpen, product }) => {
           </Button>
 
           <Button
-            disabled={loader}
+            disabled={loader || !selectedFile}
             type="submit"
             variant="contained"
             color="primary"
