@@ -2,7 +2,9 @@
 
 [![Frontend CI](https://github.com/Derek376/react-ecom/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/Derek376/react-ecom/actions/workflows/frontend-ci.yml)
 
-Modern e-commerce storefront built with React — product browsing, cart, checkout, Stripe payments, user profile/orders, and admin/seller dashboards.
+Portfolio-grade e-commerce frontend built with React. It covers the complete
+customer journey—from product discovery to verified Stripe checkout—plus
+role-aware admin and seller dashboards.
 
 Backend API: **[sb-ecom](https://github.com/Derek376/sb-ecom)** (Spring Boot + PostgreSQL)
 
@@ -27,6 +29,9 @@ Backend API: **[sb-ecom](https://github.com/Derek376/sb-ecom)** (Spring Boot + P
 - Multi-step **checkout** (address → payment method → summary → Stripe)
 - **Profile** + **My Orders** for customers
 - **Admin / Seller** panels (products, categories, orders, sellers, analytics)
+- Stable URL-driven dashboard pagination and explicit server-backed sorting
+- Cloudinary product images with client-side type and size validation
+- Route-level code splitting, loading/error states, automated tests, and CI
 - Deployed on **Vercel** against a live Spring Boot API on **Northflank** + **Neon** Postgres
 
 ---
@@ -48,13 +53,14 @@ Suggested walkthrough for reviewers:
 |------|--------|
 | UI | React 19, Vite 8 |
 | State | Redux Toolkit |
-| Routing | React Router 7 |
+| Routing | React Router 8 |
 | Styling | Tailwind CSS 4, Material UI 9 |
 | HTTP | Axios (`withCredentials` + CSRF interceptor) |
 | Forms | React Hook Form |
 | Payments | Stripe React / Stripe.js (test mode) |
 | UX | React Hot Toast, Swiper, skeletons |
 | Testing | Vitest, React Testing Library, jsdom |
+| Delivery | Vercel, GitHub Actions |
 
 ---
 
@@ -75,13 +81,22 @@ Suggested walkthrough for reviewers:
 ### Checkout & payments
 - Address selection → payment method → order summary
 - Stripe Payment Element + redirect confirmation
+- Client secret requests are deduplicated and expose a recoverable retry state
 - PayPal option shown as unavailable (UI placeholder)
 
 ### Admin / Seller
 - Dashboard analytics (admin)
-- Manage categories, products, images
+- Manage categories, products, and Cloudinary images
 - Manage sellers (admin)
 - View / update order status
+- Sort and paginate products, categories, orders, and sellers with URL-persisted table state
+
+### Quality and performance
+- Route-level `lazy()` loading with a shared Suspense fallback
+- Deliberate loading, empty, and error states for dashboard data
+- Product image validation before upload (JPEG, PNG, WebP; maximum 5 MB)
+- Reducer, routing, cart, formatting, and dashboard-query regression tests
+- ESLint, tests, and production build enforced by GitHub Actions
 
 ---
 
@@ -89,7 +104,7 @@ Suggested walkthrough for reviewers:
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 22.22+
 - Running [sb-ecom](https://github.com/Derek376/sb-ecom) on `http://localhost:8080`
 
 ### 1. Install
@@ -143,6 +158,14 @@ During development, use watch mode to rerun affected tests after each change:
 npm run test:watch
 ```
 
+To run the same quality checks used by CI:
+
+```bash
+npm test
+npm run lint
+npm run build
+```
+
 ---
 
 ## Routes
@@ -182,7 +205,7 @@ src/
 ├── store/
 │   ├── actions/         # API thunks
 │   └── reducers/        # auth, cart, products, orders, …
-├── utils/
+├── utils/               # Formatting + validated dashboard table queries
 ├── App.jsx
 └── main.jsx
 ```
@@ -199,7 +222,12 @@ This app expects **sb-ecom** with CORS allowing the frontend origin and JWT auth
 | Auth | Login stores only non-sensitive profile data locally; the JWT remains in an HTTP-only cookie |
 | CSRF | Axios fetches `/auth/csrf` and attaches the returned token to state-changing requests |
 | Cookies | Sent with `withCredentials: true`; production uses `Secure` + `SameSite=None` |
-| Images | Product `image` URLs come from the API (`IMAGE_BASE_URL` on the server) |
+| Images | Product records contain secure Cloudinary URLs returned by the API |
+
+Dashboard tables keep `page`, `sortBy`, and `sortOrder` in the URL. The URL is
+the single source of truth for pagination and sorting, so moving between pages,
+using browser navigation, or refreshing the page does not silently change the
+selected ordering.
 
 Typical local workflow:
 
@@ -253,6 +281,9 @@ GitHub Actions runs the frontend quality checks on every pull request targeting
 
 The workflow is defined in `.github/workflows/frontend-ci.yml` and requires no
 repository secrets.
+
+The current suite contains **38 passing tests** across reducers, protected
+routes, cart behaviour, formatting utilities, and dashboard query state.
 
 ---
 
