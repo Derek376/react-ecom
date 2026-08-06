@@ -27,6 +27,7 @@ const HeroBanner = () => {
         pagination={{ clickable: true }}
         scrollbar={{ draggable: true }}
         slidesPerView={1}
+        loop={true}
       >
         {bannerLists.map((item) => (
           <SwiperSlide key={item.id}>
