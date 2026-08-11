@@ -53,6 +53,9 @@ const AddAddressForm = ({ address, setOpenAddressModal }) => {
           <InputField
             label="Building Name"
             required
+            notBlank
+            min={5}
+            minMessage="*Building name must be at least 5 characters long"
             id="buildingName"
             type="text"
             message="*Building Name is required"
@@ -64,6 +67,9 @@ const AddAddressForm = ({ address, setOpenAddressModal }) => {
           <InputField
             label="City"
             required
+            notBlank
+            min={4}
+            minMessage="*City name must be at least 4 characters long"
             id="city"
             type="text"
             message="*City is required"
@@ -75,6 +81,9 @@ const AddAddressForm = ({ address, setOpenAddressModal }) => {
           <InputField
             label="State"
             required
+            notBlank
+            min={2}
+            minMessage="*State name must be at least 2 characters long"
             id="state"
             type="text"
             message="*State is required"
@@ -86,6 +95,9 @@ const AddAddressForm = ({ address, setOpenAddressModal }) => {
           <InputField
             label="Eircode"
             required
+            notBlank
+            min={5}
+            minMessage="*Eircode must be at least 5 characters long"
             id="eirCode"
             type="text"
             message="*Eircode is required"
@@ -97,6 +109,9 @@ const AddAddressForm = ({ address, setOpenAddressModal }) => {
           <InputField
             label="Street"
             required
+            notBlank
+            min={5}
+            minMessage="*Street name must be at least 5 characters long"
             id="street"
             type="text"
             message="*Street is required"
@@ -108,6 +123,9 @@ const AddAddressForm = ({ address, setOpenAddressModal }) => {
           <InputField
             label="Country"
             required
+            notBlank
+            min={2}
+            minMessage="*Country name must be at least 2 characters long"
             id="country"
             type="text"
             message="*Country is required"

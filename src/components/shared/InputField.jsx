@@ -9,6 +9,8 @@ const InputField = ({
   message,
   className,
   min,
+  minMessage,
+  notBlank = false,
   placeholder,
 }) => {
   return (
@@ -34,8 +36,15 @@ const InputField = ({
         {...register(id, {
           required: { value: required, message },
           minLength: min
-            ? { value: min, message: `Minimum ${min} character is required` }
+            ? {
+                value: min,
+                message:
+                  minMessage || `Minimum ${min} character is required`,
+              }
             : null,
+          validate: notBlank
+            ? (value) => value.trim().length > 0 || message
+            : undefined,
           pattern:
             type === "email"
               ? {
