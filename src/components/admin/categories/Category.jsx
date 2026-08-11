@@ -24,7 +24,9 @@ const Category = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const { categoryLoader, errorMessage } = useSelector((state) => state.errors);
-  const { categories, pagination } = useSelector((state) => state.products);
+  const { categories, categoryPagination } = useSelector(
+    (state) => state.products,
+  );
   const {
     page,
     sortBy,
@@ -114,16 +116,16 @@ const Category = () => {
                 rows={tableRecords}
                 columns={categoryTableColumns(handleEdit, handleDelete)}
                 paginationMode="server"
-                rowCount={pagination?.totalElements ?? 0}
+                rowCount={categoryPagination?.totalElements ?? 0}
                 paginationModel={{
-                  pageSize: pagination?.pageSize || 10,
+                  pageSize: categoryPagination?.pageSize || 10,
                   page: page - 1,
                 }}
                 onPaginationModelChange={handlePaginationChange}
                 disableRowSelectionOnClick
                 disableColumnResize
                 disableColumnSorting
-                pageSizeOptions={[pagination?.pageSize || 10]}
+                pageSizeOptions={[categoryPagination?.pageSize || 10]}
                 pagination
               />
             </div>

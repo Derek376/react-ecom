@@ -16,7 +16,7 @@ import Filter from "./Filter";
 const Products = () => {
   const { isLoading, errorMessage } = useSelector((state) => state.errors);
 
-  const { products, categories, pagination } = useSelector(
+  const { products, categories, productPagination } = useSelector(
     (state) => state.products,
   );
 
@@ -47,7 +47,7 @@ const Products = () => {
           </div>
           <div className="flex justify-center pt-10">
             <Paginations
-              numberOfPages={pagination.totalPages}
+              numberOfPages={productPagination.totalPages}
             />
           </div>
         </div>

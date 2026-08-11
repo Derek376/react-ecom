@@ -53,7 +53,9 @@ const AdminProducts = () => {
   //   lastPage: true,
   // };
 
-  const { products, pagination } = useSelector((state) => state.products);
+  const { products, productPagination } = useSelector(
+    (state) => state.products,
+  );
   const { isLoading } = useSelector((state) => state.errors);
 
   const emptyProducts = !products || products?.length === 0;
@@ -174,16 +176,16 @@ const AdminProducts = () => {
                   handleProductView,
                 )}
                 paginationMode="server"
-                rowCount={pagination?.totalElements ?? 0}
+                rowCount={productPagination?.totalElements ?? 0}
                 paginationModel={{
-                  pageSize: pagination?.pageSize || 6,
+                  pageSize: productPagination?.pageSize || 6,
                   page: page - 1,
                 }}
                 onPaginationModelChange={handlePaginationChange}
                 disableRowSelectionOnClick
                 disableColumnResize
                 disableColumnSorting
-                pageSizeOptions={[pagination?.pageSize || 10]}
+                pageSizeOptions={[productPagination?.pageSize || 10]}
               />
             </div>
           )}

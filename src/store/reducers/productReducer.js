@@ -1,7 +1,8 @@
 const initialState = {
   products: null,
   categories: [],
-  pagination: {},
+  productPagination: {},
+  categoryPagination: {},
 };
 
 export const productReducer = (state = initialState, action) => {
@@ -10,8 +11,8 @@ export const productReducer = (state = initialState, action) => {
       return {
         ...state,
         products: action.payload,
-        pagination: {
-          ...state.pagination,
+        productPagination: {
+          ...state.productPagination,
           pageNumber: action.pageNumber,
           pageSize: action.pageSize,
           totalElements: action.totalElements,
@@ -24,8 +25,8 @@ export const productReducer = (state = initialState, action) => {
       return {
         ...state,
         categories: action.payload,
-        pagination: {
-          ...state.pagination,
+        categoryPagination: {
+          ...state.categoryPagination,
           pageNumber: action.pageNumber,
           pageSize: action.pageSize,
           totalElements: action.totalElements,
