@@ -31,17 +31,21 @@ reasoned about and tested.
 
 ![Product catalogue with filtering, sorting, and pagination](docs/screenshots/Product%20catalogue.webp)
 
-### Checkout
+### Order summary
 
-| Order summary | Stripe Payment Element |
-|---|---|
-| ![Checkout order summary](docs/screenshots/Order%20Summary.webp) | ![Stripe payment form](docs/screenshots/Payment.webp) |
+![Checkout order summary](docs/screenshots/Order%20Summary.webp)
 
-### Role-based dashboards
+### Stripe payment
 
-| Administrator | Seller |
-|---|---|
-| ![Administrator analytics dashboard](docs/screenshots/Admin%20Panel.webp) | ![Seller order management panel](docs/screenshots/Seller%20Panel.webp) |
+![Stripe Payment Element](docs/screenshots/Payment.webp)
+
+### Administrator dashboard
+
+![Administrator analytics dashboard](docs/screenshots/Admin%20Panel.webp)
+
+### Seller dashboard
+
+![Seller order management panel](docs/screenshots/Seller%20Panel.webp)
 
 ## What is implemented
 
