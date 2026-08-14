@@ -1,164 +1,120 @@
-# react-ecom
+# E-Shop — React storefront
 
 [![Frontend CI](https://github.com/Derek376/react-ecom/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/Derek376/react-ecom/actions/workflows/frontend-ci.yml)
 
-Portfolio-grade e-commerce frontend built with React. It covers the complete
-customer journey—from product discovery to verified Stripe checkout—plus
-role-aware admin and seller dashboards.
+A deployed e-commerce frontend covering the customer, seller, and administrator
+journeys. It is paired with a Spring Boot API rather than mocked data.
 
-Backend API: **[sb-ecom](https://github.com/Derek376/sb-ecom)** (Spring Boot + PostgreSQL)
+[Live storefront](https://react-ecom-zeta.vercel.app) ·
+[Backend repository](https://github.com/Derek376/sb-ecom) ·
+[Swagger API](https://p01--sb-ecom--ccxd59t2vl2x.code.run/swagger-ui/index.html)
 
----
+## Why I built it
 
-## Live demo
+Most e-commerce demos stop after adding an item to a cart. I used this project
+to work through the less visible parts of the flow: where authentication should
+live, which values the browser must not be trusted to calculate, how paginated
+tables keep a stable order, and what the UI should show while several requests
+are in flight.
 
-| | URL |
-|---|-----|
-| **Storefront** | https://react-ecom-zeta.vercel.app |
-| **API docs (Swagger)** | https://p01--sb-ecom--ccxd59t2vl2x.code.run/swagger-ui/index.html |
-| **Backend repo** | [Derek376/sb-ecom](https://github.com/Derek376/sb-ecom) |
+The result is not intended to be a production marketplace. It is a focused
+full-stack project where the checkout and role boundaries are real enough to be
+reasoned about and tested.
 
-> The Spring Boot API is deployed as a Docker service on Northflank.
-
----
-
-## Highlights
-
-- Responsive storefront with product grid, filters, and cart
-- Auth flows with a **JWT HTTP-only cookie + CSRF protection**
-- Multi-step **checkout** (address → payment method → summary → Stripe)
-- **Profile** + **My Orders** for customers
-- **Admin / Seller** panels (products, categories, orders, sellers, analytics)
-- Stable URL-driven dashboard pagination and explicit server-backed sorting
-- Cloudinary product images with client-side type and size validation
-- Route-level code splitting, loading/error states, automated tests, and CI
-- Deployed on **Vercel** against a live Spring Boot API on **Northflank** + **Neon** Postgres
-
----
-
-## Screenshots / demo flow
-
-Suggested walkthrough for reviewers:
-
-1. Open the live storefront → browse **Products**
-2. Register / log in as a normal user → add items → **Checkout**
-3. Open the avatar menu → **My Profile** / **My Orders**
-4. Log in as admin → **Admin Panel** (categories, products, orders)
-
----
-
-## Tech stack
-
-| Area | Choice |
-|------|--------|
-| UI | React 19, Vite 8 |
-| State | Redux Toolkit |
-| Routing | React Router 8 |
-| Styling | Tailwind CSS 4, Material UI 9 |
-| HTTP | Axios (`withCredentials` + CSRF interceptor) |
-| Forms | React Hook Form |
-| Payments | Stripe React / Stripe.js (test mode) |
-| UX | React Hot Toast, Swiper, skeletons |
-| Testing | Vitest, React Testing Library, jsdom |
-| Delivery | Vercel, GitHub Actions |
-
----
-
-## Features
+## Product tour
 
 ### Storefront
-- Home hero + featured products
-- Product listing with pagination, category & keyword filters
-- Product detail modal, add to cart
-- Cart with quantity controls (local persistence + server sync at checkout)
 
-### Account
-- Register / login / logout
-- Shipping address management (scoped to the logged-in user)
-- Profile page (username, email, roles)
-- My Orders (order history for the current user)
+![E-Shop storefront with hero banner and featured products](docs/screenshots/Storefront.webp)
 
-### Checkout & payments
-- Address selection → payment method → order summary
-- Stripe Payment Element + redirect confirmation
-- Client secret requests are deduplicated and expose a recoverable retry state
-- PayPal option shown as unavailable (UI placeholder)
+### Product catalogue
 
-### Admin / Seller
-- Dashboard analytics (admin)
-- Manage categories, products, and Cloudinary images
-- Manage sellers (admin)
-- View / update order status
-- Sort and paginate products, categories, orders, and sellers with URL-persisted table state
+![Product catalogue with filtering, sorting, and pagination](docs/screenshots/Product%20catalogue.webp)
 
-### Quality and performance
-- Route-level `lazy()` loading with a shared Suspense fallback
-- Deliberate loading, empty, and error states for dashboard data
-- Product image validation before upload (JPEG, PNG, WebP; maximum 5 MB)
-- Reducer, routing, cart, formatting, and dashboard-query regression tests
-- ESLint, tests, and production build enforced by GitHub Actions
+### Checkout
 
----
+| Order summary | Stripe Payment Element |
+|---|---|
+| ![Checkout order summary](docs/screenshots/Order%20Summary.webp) | ![Stripe payment form](docs/screenshots/Payment.webp) |
 
-## Quick start (local)
+### Role-based dashboards
 
-### Prerequisites
+| Administrator | Seller |
+|---|---|
+| ![Administrator analytics dashboard](docs/screenshots/Admin%20Panel.webp) | ![Seller order management panel](docs/screenshots/Seller%20Panel.webp) |
 
-- Node.js 22.22+
-- Running [sb-ecom](https://github.com/Derek376/sb-ecom) on `http://localhost:8080`
+## What is implemented
 
-### 1. Install
+- Responsive catalogue with search, category filters, pagination, cart, and product details
+- Registration, login, profile, saved addresses, and customer order history
+- Multi-step Stripe checkout with a retryable, deduplicated client-secret request
+- Admin management of products, categories, sellers, orders, and analytics
+- Seller-scoped product and order management
+- Cloudinary image upload with client-side type and 5 MB size checks
+- URL-driven dashboard sorting and pagination that survive refresh/navigation
+- Separate product and category pagination state to avoid request-order races
+- Deliberate loading, empty, error, and unavailable states
+
+## Decisions that matter
+
+**The JWT stays out of JavaScript.** Login stores only display-safe user details
+in `localStorage`; authentication is carried by a secure HTTP-only cookie. Axios
+sends credentials and obtains a CSRF token for state-changing requests.
+
+**The UI does not decide what an order costs.** It displays prices, but the API
+rebuilds the amount from the server-side cart and verifies the Stripe
+PaymentIntent before creating an order.
+
+**The URL owns table state.** Dashboard page and sort values live in query
+parameters. A refresh or browser Back action therefore restores the same view
+instead of silently changing the ordering.
+
+**Async states are part of the feature.** Empty data is not treated as loading,
+and a failed checkout request produces one recoverable error state rather than
+repeated toast notifications.
+
+## System shape
+
+```text
+React + Vite (Vercel)
+        │ HTTPS, JWT cookie, CSRF header
+        ▼
+Spring Boot API (Northflank)
+        ├── Neon PostgreSQL
+        ├── Stripe
+        └── Cloudinary
+```
+
+| Area              | Technology                                      |
+| ----------------- | ----------------------------------------------- |
+| UI                | React 19, Vite 8, Tailwind CSS 4, Material UI 9 |
+| State and routing | Redux Toolkit, React Router 8                   |
+| Forms and HTTP    | React Hook Form, Axios                          |
+| Payments          | Stripe React / Stripe.js in test mode           |
+| Tests             | Vitest, React Testing Library, jsdom            |
+| Delivery          | Vercel, GitHub Actions                          |
+
+## Run locally
+
+Requirements: Node.js 22.22+ and the
+[backend API](https://github.com/Derek376/sb-ecom) running on port `8080`.
 
 ```bash
 npm install
+cp .env.example .env
+npm run dev
 ```
-
-### 2. Environment
-
-Copy `.env.example` to `.env`:
 
 ```env
 VITE_BACK_END_URL=http://localhost:8080
 VITE_FRONTEND_URL=http://localhost:5173
-VITE_STRIPE_PUBLISHABLE_KEY=pk_test_your_key_here
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
 ```
 
-| Variable | Description |
-|----------|-------------|
-| `VITE_BACK_END_URL` | API origin **without** `/api` (client appends `/api`) |
-| `VITE_FRONTEND_URL` | Used as Stripe `return_url` base |
-| `VITE_STRIPE_PUBLISHABLE_KEY` | Stripe publishable test key |
+`VITE_BACK_END_URL` is the origin without `/api`. Vite embeds these variables at
+build time, so deployed changes require a rebuild.
 
-### 3. Dev server
-
-```bash
-npm run dev
-```
-
-App: **http://localhost:5173**
-
-### 4. Production build
-
-```bash
-npm run build
-npm run preview
-```
-
-### 5. Tests
-
-Run the full frontend test suite once:
-
-```bash
-npm test
-```
-
-During development, use watch mode to rerun affected tests after each change:
-
-```bash
-npm run test:watch
-```
-
-To run the same quality checks used by CI:
+## Quality checks
 
 ```bash
 npm test
@@ -166,134 +122,14 @@ npm run lint
 npm run build
 ```
 
----
-
-## Routes
-
-| Path | Access | Description |
-|------|--------|-------------|
-| `/` | Public | Home |
-| `/products` | Public | Catalog |
-| `/cart` | Public | Shopping cart |
-| `/about`, `/contact` | Public | Static pages |
-| `/login`, `/register` | Guest | Auth |
-| `/checkout` | Auth | Checkout wizard |
-| `/order-confirm` | Auth | Stripe return / order confirm |
-| `/profile` | Auth | Account overview |
-| `/profile/orders` | Auth | Customer order history |
-| `/admin/*` | Admin / Seller | Dashboard, products, categories, orders, sellers |
-
-SPA deep links on Vercel are handled via `vercel.json` rewrites to `index.html`.
-
----
-
-## Project structure
-
-```
-src/
-├── api/                 # Axios instance + CSRF interceptor
-├── components/
-│   ├── admin/           # Dashboard, products, categories, orders, sellers
-│   ├── auth/            # Login / Register
-│   ├── cart/
-│   ├── checkout/        # Address, Stripe, confirmation
-│   ├── home/
-│   ├── product/
-│   ├── profile/         # Profile + My Orders
-│   └── shared/          # Navbar, cards, loaders, modals
-├── hooks/               # URL-driven product/order filters
-├── store/
-│   ├── actions/         # API thunks
-│   └── reducers/        # auth, cart, products, orders, …
-├── utils/               # Formatting + validated dashboard table queries
-├── App.jsx
-└── main.jsx
-```
-
----
-
-## Backend integration
-
-This app expects **sb-ecom** with CORS allowing the frontend origin and JWT auth enabled.
-
-| Concern | How it works |
-|---------|----------------|
-| API base | `${VITE_BACK_END_URL}/api` |
-| Auth | Login stores only non-sensitive profile data locally; the JWT remains in an HTTP-only cookie |
-| CSRF | Axios fetches `/auth/csrf` and attaches the returned token to state-changing requests |
-| Cookies | Sent with `withCredentials: true`; production uses `Secure` + `SameSite=None` |
-| Images | Product records contain secure Cloudinary URLs returned by the API |
-
-Dashboard tables keep `page`, `sortBy`, and `sortOrder` in the URL. The URL is
-the single source of truth for pagination and sorting, so moving between pages,
-using browser navigation, or refreshing the page does not silently change the
-selected ordering.
-
-Typical local workflow:
-
-1. Start Postgres + `sb-ecom`
-2. Configure `.env` as above
-3. `npm run dev`
-4. Register a user, browse, checkout; use an admin account for `/admin`
-
----
-
-## Deploy (Vercel)
-
-1. Import this GitHub repo into Vercel (Framework: Vite, output: `dist`)
-2. Set Production env vars:
-
-```env
-VITE_BACK_END_URL=https://p01--sb-ecom--ccxd59t2vl2x.code.run
-VITE_FRONTEND_URL=https://YOUR-VERCEL-APP.vercel.app
-VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
-```
-
-3. Deploy, then set `VITE_FRONTEND_URL` to the real Vercel domain and **Redeploy**. Vite embeds `VITE_*` variables during the build, so changing a value requires a new deployment.
-4. In Northflank, set `FRONTEND_URL` to that exact Vercel origin (no trailing slash) and redeploy the backend service.
-
-`vercel.json` already rewrites all routes to `index.html` so `/profile`, `/order-confirm`, etc. work on refresh.
-
----
-
-## Scripts
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Vite dev server |
-| `npm run build` | Production build → `dist/` |
-| `npm run preview` | Preview production build |
-| `npm run lint` | ESLint |
-| `npm test` | Run all frontend tests once |
-| `npm run test:watch` | Rerun tests while developing |
-
----
-
-## Continuous integration
-
-GitHub Actions runs the frontend quality checks on every pull request targeting
-`main` and every push to `main`:
-
-1. Install the locked dependencies with `npm ci`
-2. Run the Vitest suite
-3. Run ESLint
-4. Build the production bundle
-
-The workflow is defined in `.github/workflows/frontend-ci.yml` and requires no
-repository secrets.
-
-The current suite contains **38 passing tests** across reducers, protected
-routes, cart behaviour, formatting utilities, and dashboard query state.
-
----
+The current suite has **41 tests** covering reducers, protected routes, cart
+behaviour, formatting, dashboard query state, independent pagination, and
+address validation. GitHub Actions runs the same test, lint, and build checks on
+pushes and pull requests to `main`.
 
 ## Related
 
-- Backend: [Derek376/sb-ecom](https://github.com/Derek376/sb-ecom)
-- Author: [Derek376](https://github.com/Derek376)
-
----
-
-## License
+- [Spring Boot backend](https://github.com/Derek376/sb-ecom)
+- [Derek376 on GitHub](https://github.com/Derek376)
 
 MIT — see [LICENSE](LICENSE).
