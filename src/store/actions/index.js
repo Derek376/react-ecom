@@ -11,31 +11,33 @@ const getDashboardQuery = (queryString, config) =>
     config,
   );
 
-export const fetchProducts = (queryString = "") => async (dispatch) => {
-  try {
-    dispatch({ type: "IS_FETCHING" });
-    const endpoint = queryString
-      ? `/public/products?${queryString}`
-      : "/public/products";
-    const { data } = await api.get(endpoint);
-    dispatch({
-      type: "FETCH_PRODUCTS",
-      payload: data.content,
-      pageNumber: data.pageNumber,
-      pageSize: data.pageSize,
-      totalElements: data.totalElements,
-      totalPages: data.totalPages,
-      lastPage: data.lastPage,
-    });
-    dispatch({ type: "IS_SUCCESS" });
-  } catch (error) {
-    console.log(error);
-    dispatch({
-      type: "IS_ERROR",
-      payload: error?.response?.data?.message || "Failed to fetch products",
-    });
-  }
-};
+export const fetchProducts =
+  (queryString = "") =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: "IS_FETCHING" });
+      const endpoint = queryString
+        ? `/public/products?${queryString}`
+        : "/public/products";
+      const { data } = await api.get(endpoint);
+      dispatch({
+        type: "FETCH_PRODUCTS",
+        payload: data.content,
+        pageNumber: data.pageNumber,
+        pageSize: data.pageSize,
+        totalElements: data.totalElements,
+        totalPages: data.totalPages,
+        lastPage: data.lastPage,
+      });
+      dispatch({ type: "IS_SUCCESS" });
+    } catch (error) {
+      console.log(error);
+      dispatch({
+        type: "IS_ERROR",
+        payload: error?.response?.data?.message || "Failed to fetch products",
+      });
+    }
+  };
 
 export const fetchCategories = () => async (dispatch) => {
   try {
@@ -145,8 +147,20 @@ export const authenticateSignInUser =
       toast.success("Login Success");
       navigate("/");
     } catch (error) {
-      console.log(error);
-      toast.error(error?.response?.data?.message || "Internal Server Error");
+      console.error("Login failed:", error);
+
+      const status = error.response?.status;
+
+      const message =
+        status === 401
+          ? "Invalid username or password"
+          : status === 403
+            ? "Security verification failed. Please refresh and try again."
+            : error.response?.data?.message ||
+              error.response?.data?.error ||
+              "Unable to complete login";
+
+      toast.error(message);
     } finally {
       setLoader(false);
     }
@@ -186,8 +200,7 @@ export const logOutUser = (navigate) => async (dispatch) => {
 };
 
 export const addUpdatedUserAddress =
-  (sendData, toast, addressId, setOpenAddressModal) =>
-  async (dispatch) => {
+  (sendData, toast, addressId, setOpenAddressModal) => async (dispatch) => {
     dispatch({ type: "BUTTON_LOADER" });
     try {
       if (addressId) {
@@ -305,25 +318,24 @@ export const getUserCart = () => async (dispatch, getState) => {
   }
 };
 
-export const createStripePaymentSecret =
-  (sendData) => async (dispatch) => {
-    try {
-      dispatch({ type: "IS_FETCHING" });
-      const { data } = await api.post("/order/stripe-client-secret", sendData);
-      dispatch({ type: "CLIENT_SECRET", payload: data });
-      dispatch({ type: "IS_SUCCESS" });
-      return { ok: true };
-    } catch (error) {
-      console.log(error);
-      const message =
-        error?.response?.data?.message || "Failed to create client secret";
-      dispatch({
-        type: "IS_ERROR",
-        payload: message,
-      });
-      return { ok: false, error: message };
-    }
-  };
+export const createStripePaymentSecret = (sendData) => async (dispatch) => {
+  try {
+    dispatch({ type: "IS_FETCHING" });
+    const { data } = await api.post("/order/stripe-client-secret", sendData);
+    dispatch({ type: "CLIENT_SECRET", payload: data });
+    dispatch({ type: "IS_SUCCESS" });
+    return { ok: true };
+  } catch (error) {
+    console.log(error);
+    const message =
+      error?.response?.data?.message || "Failed to create client secret";
+    dispatch({
+      type: "IS_ERROR",
+      payload: message,
+    });
+    return { ok: false, error: message };
+  }
+};
 
 export const stripePaymentConfirmation =
   (sendData, setErrorMesssage, setLoading, setOrderCreated, toast) =>
@@ -380,8 +392,7 @@ export const fetchUserOrders = () => async (dispatch) => {
     console.log(error);
     dispatch({
       type: "USER_ORDERS_ERROR",
-      payload:
-        error?.response?.data?.message || "Failed to fetch your orders",
+      payload: error?.response?.data?.message || "Failed to fetch your orders",
     });
   }
 };
@@ -410,7 +421,8 @@ export const getOrdersForDashboard =
       console.log(error);
       dispatch({
         type: "DASHBOARD_ORDERS_ERROR",
-        payload: error?.response?.data?.message || "Failed to fetch orders data",
+        payload:
+          error?.response?.data?.message || "Failed to fetch orders data",
       });
     }
   };
@@ -461,7 +473,8 @@ export const dashboardProductsAction =
       dispatch({
         type: "IS_ERROR",
         payload:
-          error?.response?.data?.message || "Failed to fetch dashboard products",
+          error?.response?.data?.message ||
+          "Failed to fetch dashboard products",
       });
     }
   };
@@ -596,8 +609,7 @@ export const createCategoryDashboardAction =
   };
 
 export const updateCategoryDashboardAction =
-  (sendData, setOpen, categoryID, reset, toast) =>
-  async (dispatch) => {
+  (sendData, setOpen, categoryID, reset, toast) => async (dispatch) => {
     try {
       dispatch({ type: "CATEGORY_LOADER" });
 
@@ -644,34 +656,33 @@ export const deleteCategoryDashboardAction =
     }
   };
 
-export const getAllSellersDashboard =
-  (queryString) => async (dispatch) => {
-    try {
-      dispatch({ type: "IS_FETCHING" });
-      const params = getDashboardQuery(
-        queryString,
-        dashboardTableConfigs.sellers,
-      );
-      const { data } = await api.get(`/admin/sellers?${params}`);
-      dispatch({
-        type: "GET_SELLERS",
-        payload: data["content"],
-        pageNumber: data["pageNumber"],
-        pageSize: data["pageSize"],
-        totalElements: data["totalElements"],
-        totalPages: data["totalPages"],
-        lastPage: data["lastPage"],
-      });
+export const getAllSellersDashboard = (queryString) => async (dispatch) => {
+  try {
+    dispatch({ type: "IS_FETCHING" });
+    const params = getDashboardQuery(
+      queryString,
+      dashboardTableConfigs.sellers,
+    );
+    const { data } = await api.get(`/admin/sellers?${params}`);
+    dispatch({
+      type: "GET_SELLERS",
+      payload: data["content"],
+      pageNumber: data["pageNumber"],
+      pageSize: data["pageSize"],
+      totalElements: data["totalElements"],
+      totalPages: data["totalPages"],
+      lastPage: data["lastPage"],
+    });
 
-      dispatch({ type: "IS_SUCCESS" });
-    } catch (err) {
-      console.log(err);
-      dispatch({
-        type: "IS_ERROR",
-        payload: err?.response?.data?.message || "Failed to fetch sellers data",
-      });
-    }
-  };
+    dispatch({ type: "IS_SUCCESS" });
+  } catch (err) {
+    console.log(err);
+    dispatch({
+      type: "IS_ERROR",
+      payload: err?.response?.data?.message || "Failed to fetch sellers data",
+    });
+  }
+};
 
 export const addNewDashboardSeller =
   (sendData, toast, reset, setOpen, setLoader) => async (dispatch) => {

@@ -10,11 +10,13 @@ const baseURL = import.meta.env.DEV
 const api = axios.create({
   baseURL,
   withCredentials: true,
+  withXSRFToken: false,
 });
 
 const csrfClient = axios.create({
   baseURL,
   withCredentials: true,
+  withXSRFToken: false,
 });
 
 let csrfRequest = null;
