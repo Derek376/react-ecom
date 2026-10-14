@@ -1,4 +1,4 @@
-import { formatPriceCalculation } from "../../utils/formatPrice";
+import { formatPrice } from "../../utils/formatPrice";
 
 const OrderSummary = ({ totalPrice, cart, address, paymentMethod }) => {
   return (
@@ -53,10 +53,8 @@ const OrderSummary = ({ totalPrice, cart, address, paymentMethod }) => {
                     <div className="text-gray-500">
                       <p>{item?.productName}</p>
                       <p>
-                        {item?.quantity} x ${item?.specialPrice} = $
-                        {formatPriceCalculation(
-                          item?.quantity,
-                          item?.specialPrice,
+                        {item?.quantity} × {formatPrice(Number(item?.specialPrice))} = {formatPrice(
+                          Number(item?.quantity) * Number(item?.specialPrice),
                         )}
                       </p>
                     </div>
@@ -73,15 +71,15 @@ const OrderSummary = ({ totalPrice, cart, address, paymentMethod }) => {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <p>Products</p>
-                <p>${formatPriceCalculation(totalPrice, 1)}</p>
+                <p>{formatPrice(Number(totalPrice || 0))}</p>
               </div>
               <div className="flex justify-between">
                 <p>Tax (0%)</p>
-                <p>$0.00</p>
+                <p>{formatPrice(0)}</p>
               </div>
               <div className="flex justify-between font-semibold">
                 <p>Subtotal</p>
-                <p>${formatPriceCalculation(totalPrice, 1)}</p>
+                <p>{formatPrice(Number(totalPrice || 0))}</p>
               </div>
             </div>
           </div>

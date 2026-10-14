@@ -4,6 +4,9 @@ import { Route, BrowserRouter as Router, Routes } from "react-router";
 import "./App.css";
 import PrivateRoute from "./components/PrivateRoute";
 import Navbar from "./components/shared/Navbar";
+import { useSelector } from "react-redux";
+import DemoBanner from "./components/demo/DemoBanner";
+const DemoPage = lazy(() => import("./components/demo/DemoPage"));
 
 const About = lazy(() => import("./components/About"));
 const LogIn = lazy(() => import("./components/auth/Login"));
@@ -39,13 +42,16 @@ function RouteLoadingFallback() {
 }
 
 function App() {
+  const user = useSelector((state) => state.auth.user);
   return (
     <>
       <Router>
         <Navbar />
-        <Suspense fallback={<RouteLoadingFallback />}>
+        <DemoBanner />
+        <Suspense key={user?.id ?? "guest"} fallback={<RouteLoadingFallback />}>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/demo" element={<DemoPage />} />
             <Route path="/products" element={<Products />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />

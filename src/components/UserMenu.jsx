@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { Avatar, Menu, MenuItem } from "@mui/material";
 import { useState } from "react";
 import { BiUser } from "react-icons/bi";
@@ -28,7 +29,7 @@ const UserMenu = () => {
   };
 
   const logOutHandler = () => {
-    dispatch(logOutUser(navigate));
+    dispatch(logOutUser(navigate)).catch(() => toast.error("Unable to sign out. Please try again."));
   };
 
   return (

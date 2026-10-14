@@ -1,4 +1,4 @@
-import api, { clearCsrfToken } from "../../api/api";
+import api, { changeApiSession } from "../../api/api";
 import {
   buildDashboardApiQuery,
   dashboardTableConfigs,
@@ -133,16 +133,33 @@ export const removeFromCart = (data, toast) => (dispatch, getState) => {
   localStorage.setItem("cartItems", JSON.stringify(getState().carts.cart));
 };
 
+const installSession = (dispatch, user, guestCart = []) => {
+  changeApiSession(user);
+  for (const key of ["auth", "cartItems", "CHECKOUT_ADDRESS", "client-secret"]) {
+    localStorage.removeItem(key);
+  }
+  if (user) localStorage.setItem("auth", JSON.stringify(user));
+  dispatch({ type: "SESSION_CHANGED", payload: user });
+  if (guestCart.length > 0) {
+    for (const item of guestCart) dispatch({ type: "ADD_CART", payload: item });
+    localStorage.setItem("cartItems", JSON.stringify(guestCart));
+  }
+};
+
+export const enterDemo = (role) => async (dispatch) => {
+  const { data } = await api.post("/auth/demo-login", { role });
+  installSession(dispatch, data);
+  return data;
+};
+
 export const authenticateSignInUser =
-  (sendData, toast, reset, navigate, setLoader) => async (dispatch) => {
+  (sendData, toast, reset, navigate, setLoader) => async (dispatch, getState) => {
     try {
       setLoader(true);
       const { data } = await api.post("/auth/signin", sendData);
-      clearCsrfToken();
-      localStorage.removeItem("CHECKOUT_ADDRESS");
-      localStorage.removeItem("client-secret");
-      dispatch({ type: "LOGIN_USER", payload: data });
-      localStorage.setItem("auth", JSON.stringify(data));
+      // Preserve anonymous shopping when signing in normally; role switches reset carts.
+      const guestCart = !getState().auth.user && !data.demo ? getState().carts.cart : [];
+      installSession(dispatch, data, guestCart);
       reset();
       toast.success("Login Success");
       navigate("/");
@@ -187,16 +204,9 @@ export const registerNewUser =
   };
 
 export const logOutUser = (navigate) => async (dispatch) => {
-  try {
-    await api.post("/auth/signout");
-  } finally {
-    clearCsrfToken();
-    dispatch({ type: "LOG_OUT" });
-    localStorage.removeItem("auth");
-    localStorage.removeItem("CHECKOUT_ADDRESS");
-    localStorage.removeItem("client-secret");
-    navigate("/login");
-  }
+  await api.post("/auth/signout");
+  installSession(dispatch, null);
+  navigate("/login");
 };
 
 export const addUpdatedUserAddress =

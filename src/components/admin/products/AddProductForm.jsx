@@ -209,7 +209,7 @@ const AddProductForm = ({ setOpen, product, update = false }) => {
             cancel
           </Button>
           <Button
-            disabled={loader}
+            disabled={user?.demo || loader}
             type="submit"
             variant="contained"
             color="primary"

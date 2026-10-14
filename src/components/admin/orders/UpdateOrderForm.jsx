@@ -87,7 +87,7 @@ const UpdateOrderForm = ({
             cancel
           </Button>
           <Button
-            disabled={loader}
+            disabled={user?.demo || loader}
             type="submit"
             variant="contained"
             color="primary"

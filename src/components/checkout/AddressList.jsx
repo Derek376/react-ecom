@@ -16,6 +16,7 @@ const AddressList = ({
   setOpenDeleteModal,
 }) => {
   const dispatch = useDispatch();
+  const demo = useSelector((state) => state.auth.user?.demo);
   const { selectedUserCheckoutAddress } = useSelector((state) => state.auth);
 
   const onEditButtonHandler = (address) => {
@@ -80,10 +81,10 @@ const AddressList = ({
           </div>
 
           <div className="flex gap-3 absolute top-4 right-2">
-            <button onClick={() => onEditButtonHandler(address)}>
+            <button disabled={demo} aria-label="Edit address" title={demo ? "Preview only in demo mode" : undefined} onClick={() => onEditButtonHandler(address)}>
               <FaEdit size={18} className="text-teal-700" />
             </button>
-            <button onClick={() => onDeleteButtonHandler(address)}>
+            <button disabled={demo} aria-label="Delete address" title={demo ? "Preview only in demo mode" : undefined} onClick={() => onDeleteButtonHandler(address)}>
               <FaTrash size={17} className="text-rose-600" />
             </button>
           </div>

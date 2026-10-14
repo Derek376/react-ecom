@@ -76,6 +76,9 @@ const Navbar = () => {
             </Link>
           </li>
 
+          <li>
+            <Link to="/demo" onClick={() => setNavbarOpen(false)} className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50">Explore Demo</Link>
+          </li>
           {user && user.id ? (
             <li className="font-medium transition-all duration-150">
               <UserMenu />

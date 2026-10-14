@@ -11,18 +11,19 @@ import { useEffect } from "react";
 const PaymentMethod = () => {
   const dispatch = useDispatch();
   const { paymentMethod } = useSelector((state) => state.payment);
+  const demo = useSelector((state) => state.auth.user?.demo);
   const { cart, cartId } = useSelector((state) => state.carts);
   const { errorMessage } = useSelector((state) => state.errors);
 
   useEffect(() => {
-    if (cart.length > 0 && !cartId && !errorMessage) {
+    if (!demo && cart.length > 0 && !cartId && !errorMessage) {
       const sendCartItems = cart.map((item) => ({
         productId: item.productId,
         quantity: item.quantity,
       }));
       dispatch(createUserCart(sendCartItems));
     }
-  }, [cart, cartId, dispatch, errorMessage]);
+  }, [cart, cartId, dispatch, errorMessage, demo]);
 
   const paymentMethodHandler = (method) => {
     dispatch(addPaymentMethod(method));

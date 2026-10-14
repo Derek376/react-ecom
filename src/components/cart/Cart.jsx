@@ -6,6 +6,7 @@ import CartEmpty from "./CartEmpty";
 import { formatPrice } from "../../utils/formatPrice";
 
 const Cart = () => {
+  const demo = useSelector((state) => state.auth.user?.demo);
   const { cart } = useSelector((state) => state.carts);
   const newCart = { ...cart };
 
@@ -64,7 +65,7 @@ const Cart = () => {
               className="font-semibold w-75 py-2 px-4 rounded-xs bg-custom-blue text-white flex items-center justify-center gap-2 hover:text-gray-300 transition duration-500"
             >
               <MdShoppingCart size={20} />
-              Checkout
+              {demo ? "Preview Checkout" : "Checkout"}
             </button>
           </Link>
 

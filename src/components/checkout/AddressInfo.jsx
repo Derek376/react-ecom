@@ -10,6 +10,7 @@ import { deleteUserAddress } from "../../store/actions";
 import toast from "react-hot-toast";
 
 const AddressInfo = ({ address }) => {
+  const demo = useSelector((state) => state.auth.user?.demo);
   const [openAddressModal, setOpenAddressModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
@@ -41,6 +42,7 @@ const AddressInfo = ({ address }) => {
           </p>
           <button
             className="px-4 py-2 bg-blue-600 text-white font-medium rounded-sm hover:bg-blue-700 transition-all cursor-pointer"
+            disabled={demo} title={demo ? "Preview only in demo mode" : undefined}
             onClick={addNewAddressHandler}
           >
             Add Address
@@ -70,7 +72,8 @@ const AddressInfo = ({ address }) => {
                 <div className="mt-4">
                   <button
                     className="px-4 py-2 bg-blue-600 text-white font-medium rounded-sm hover:bg-blue-700 transition-all cursor-pointer"
-                    onClick={addNewAddressHandler}
+                    disabled={demo} title={demo ? "Preview only in demo mode" : undefined}
+            onClick={addNewAddressHandler}
                   >
                     Add New Address
                   </button>

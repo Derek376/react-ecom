@@ -12,6 +12,7 @@ import PaypalPayment from "./PaypalPayment";
 import StripePayment from "./StripePayment";
 
 const Checkout = () => {
+  const demo = useSelector((state) => state.auth.user?.demo);
   const [activeStep, setActiveStep] = useState(0);
   const dispatch = useDispatch();
   const { isLoading, errorMessage } = useSelector((state) => state.errors);
@@ -46,6 +47,7 @@ const Checkout = () => {
 
   return (
     <div className="py-14 min-h-[calc(100vh-100px)] mb-7">
+      {demo && <p className="max-w-3xl mx-auto mb-6 px-4 text-blue-800">Checkout preview: select the fictional address and a payment method to explore the steps. No order or payment will be submitted.</p>}
       <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((label, index) => (
           <Step key={index}>
@@ -64,7 +66,7 @@ const Checkout = () => {
           {activeStep === 1 && <PaymentMethod />}
           {activeStep === 2 && (
             <OrderSummary
-              totalPrice={totalPrice}
+              totalPrice={demo ? cart.reduce((sum, item) => sum + Number(item.specialPrice) * Number(item.quantity), 0) : totalPrice}
               cart={cart}
               address={selectedUserCheckoutAddress}
               paymentMethod={paymentMethod}
@@ -72,7 +74,12 @@ const Checkout = () => {
           )}
           {activeStep === 3 && (
             <>
-              {paymentMethod === "Stripe" ? (
+              {demo ? (
+                <div className="max-w-xl mx-auto p-8 text-center rounded-xl bg-blue-50">
+                  <h2 className="text-2xl font-bold text-slate-900">Payment preview</h2>
+                  <p className="mt-4 text-slate-600">You have reached the end of the checkout demo. Payments and order submission are disabled.</p>
+                </div>
+              ) : paymentMethod === "Stripe" ? (
                 <StripePayment />
               ) : (
                 <PaypalPayment />

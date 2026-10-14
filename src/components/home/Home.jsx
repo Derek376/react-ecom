@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import ProductCard from "../shared/ProductCard";
 import HeroBanner from "./HeroBanner";
@@ -16,6 +17,10 @@ const Home = () => {
   }, [dispatch]);
   return (
     <div className="lg:px-14 sm:px-8 px-4">
+      <section className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-blue-100 bg-blue-50 p-6">
+        <div><h1 className="font-bold text-xl text-slate-900">A full-stack e-commerce portfolio</h1><p className="mt-1 text-slate-600">Explore the Admin, Seller and Customer experience. No sign-up needed.</p></div>
+        <Link to="/demo" className="rounded-lg bg-custom-blue px-5 py-3 font-semibold text-white">Explore Demo →</Link>
+      </section>
       <div className="py-6">
         <HeroBanner />
       </div>

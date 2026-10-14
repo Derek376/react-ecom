@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { addNewDashboardSeller } from "../../../store/actions";
@@ -8,6 +8,7 @@ import Spinners from "../../shared/Spinners";
 
 const AddSellerForm = ({ setOpen }) => {
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
   const [loader, setLoader] = useState(false);
 
   const {
@@ -69,7 +70,7 @@ const AddSellerForm = ({ setOpen }) => {
             Cancel
           </button>
           <button
-            disabled={loader}
+            disabled={user?.demo || loader}
             type="submit"
             className={`font-metropolis rounded-[5px]  bg-custom-blue hover:bg-blue-800 text-white  py-2.5 px-4 text-sm font-medium`}
           >

@@ -145,7 +145,7 @@ const ImageUploadForm = ({ setOpen, product }) => {
           </Button>
 
           <Button
-            disabled={loader || !selectedFile}
+            disabled={user?.demo || loader || !selectedFile}
             type="submit"
             variant="contained"
             color="primary"

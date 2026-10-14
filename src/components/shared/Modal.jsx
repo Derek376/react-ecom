@@ -4,6 +4,7 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import DemoNotice from "../demo/DemoNotice";
 import { RxCross1 } from "react-icons/rx";
 
 function Modal({ open, setOpen, children, title = "" }) {
@@ -12,7 +13,7 @@ function Modal({ open, setOpen, children, title = "" }) {
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
-        className="relative z-10"
+        className="relative z-50"
       >
         <DialogBackdrop className="fixed inset-0 bg-gray-500/75 transition-opacity duration-500 ease-in-out data-closed:opacity-0" />
 
@@ -26,7 +27,7 @@ function Modal({ open, setOpen, children, title = "" }) {
                 <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
                   <div className="px-4 sm:px-6">
                     <DialogTitle className="text-base font-semibold leading-6 text-gray-900">
-                      Panel Title
+                      {title}
                     </DialogTitle>
                   </div>
 
@@ -39,6 +40,7 @@ function Modal({ open, setOpen, children, title = "" }) {
                         <RxCross1 className="text-slate-800 text-2xl" />
                       </button>
                     </div>
+                    <DemoNotice />
                     {children}
                   </div>
                 </div>

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 
 import {
@@ -11,6 +11,7 @@ import InputField from "../../shared/InputField";
 
 const AddCategoryForm = ({ setOpen, open, category, update = false }) => {
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
 
   const {
     register,
@@ -68,7 +69,7 @@ const AddCategoryForm = ({ setOpen, open, category, update = false }) => {
             Cancel
           </button>
           <button
-            disabled={open}
+            disabled={user?.demo || open}
             type="submit"
             className={`font-metropolis rounded-[5px]  bg-custom-blue hover:bg-blue-800 text-white  py-2.5 px-4 text-sm font-medium`}
           >

@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import { FaExclamationTriangle } from "react-icons/fa";
 import { FaTimes } from "react-icons/fa";
 import {
@@ -14,6 +15,7 @@ export const DeleteModal = ({
   onDeleteHandler,
   loader,
 }) => {
+  const demo = useSelector((state) => state.auth.user?.demo);
   return (
     <Dialog open={open} onClose={setOpen} className="relative z-50">
       <DialogBackdrop
@@ -51,14 +53,14 @@ export const DeleteModal = ({
                 </DialogTitle>
                 <div className="mt-2">
                   <p className="text-sm text-textColor2 font-metropolis">
-                    Are you sure you want to delete?
+                    {demo ? "Deletion is disabled in demo mode." : "Are you sure you want to delete?"}
                   </p>
                 </div>
               </div>
             </div>
             <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
               <button
-                disabled={loader}
+                disabled={demo || loader}
                 type="button"
                 onClick={onDeleteHandler}
                 className="inline-flex w-full bg-customRed justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"

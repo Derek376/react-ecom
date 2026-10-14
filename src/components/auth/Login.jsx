@@ -38,6 +38,10 @@ const LogIn = () => {
             Login Here
           </h1>
         </div>
+        <div className="my-5 rounded-lg bg-blue-50 p-4 text-center text-sm text-slate-700">
+          Just exploring the project? <Link to="/demo" className="font-semibold text-custom-blue underline">Explore Demo</Link>
+          <p className="mt-1">Enter as Admin, Seller or Customer without a password.</p>
+        </div>
         <hr className="mt-2 mb-5 text-black" />
         <div className="flex flex-col gap-3">
           <InputField
