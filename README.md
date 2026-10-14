@@ -137,20 +137,3 @@ pushes and pull requests to `main`.
 - [Derek376 on GitHub](https://github.com/Derek376)
 
 MIT — see [LICENSE](LICENSE).
-
-## Portfolio demo
-
-Open `/demo` (linked from the home page, navigation and login page) to enter as
-Admin, Seller or Customer without a password. The backend must include the demo
-endpoints and enable `DEMO_ENABLED` (enabled by default for this portfolio).
-
-The demo banner provides role switching and exit. Demo management forms can be
-previewed, but saving and deletion are disabled. The API also rejects demo writes.
-The customer cart stays in local storage; checkout previews address selection,
-payment method and order summary without creating a server cart, order or payment.
-
-Switching identities or signing out clears all Redux state and the stored cart,
-checkout address and payment client secret. Pending API requests are cancelled,
-and async dispatches from the previous identity are ignored.
-
-Normal customer login preserves the anonymous shopping cart.
